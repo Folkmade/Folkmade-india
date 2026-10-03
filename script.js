@@ -21,13 +21,18 @@ function searchProducts() {
   }
 }
 */
-import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  ShoppingBag, Heart, Search, Filter, Plus, Edit2, Trash2, CheckCircle, 
-  ChevronRight, Star, ShieldCheck, MapPin, Truck, RefreshCw, X, Menu, 
-  User, LayoutDashboard, Store, Package, Users, DollarSign, Tag, ArrowRight,
-  Info, Eye, Check, AlertCircle, ShoppingCart
-} from 'lucide-react';
+const { useState, useEffect, useMemo } = React;
+
+// Lucide Icon Component Helper
+const Icon = ({ name, className = "w-4 h-4" }) => {
+  useEffect(() => {
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  }, [name]);
+
+  return <i data-lucide={name} className={className}></i>;
+};
 
 const INITIAL_PRODUCTS = [
   {
@@ -147,7 +152,7 @@ const INITIAL_ARTISANS = [
   { id: 'a4', name: 'Sonam Norbu', region: 'Darjeeling, WB', specialty: 'Organic Herbal Teas', experience: '15 Years', status: 'Verified', productsCount: 5, bio: 'Nurturing small tea growers in high Himalayas for ethical and sustainable tea production.' }
 ];
 
-export default function App() {
+function App() {
   const [currentView, setCurrentView] = useState('shop');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -313,13 +318,13 @@ export default function App() {
       
       {toastMessage && (
         <div className="fixed top-20 right-5 z-50 bg-stone-900 text-amber-100 px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 border border-amber-800/40 animate-bounce">
-          <CheckCircle className="w-5 h-5 text-amber-400" />
+          <Icon name="check-circle" className="w-5 h-5 text-amber-400" />
           <span className="text-sm font-medium">{toastMessage}</span>
         </div>
       )}
 
       <div className="bg-amber-900 text-amber-100 text-xs py-2 px-4 text-center font-medium tracking-wide flex justify-center items-center gap-2">
-        <Store className="w-4 h-4 text-amber-400" />
+        <Icon name="store" className="w-4 h-4 text-amber-400" />
         <span>Empowering 500+ Rural Artisans & Traditional Food Creators across India. Free shipping on orders over ₹999!</span>
       </div>
 
@@ -353,10 +358,10 @@ export default function App() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-stone-100 text-amber-950 text-sm rounded-full pl-11 pr-4 py-2.5 border border-amber-900/10 focus:outline-none focus:ring-2 focus:ring-amber-700/50 transition-all placeholder:text-stone-400"
                 />
-                <Search className="w-4 h-4 text-amber-800 absolute left-4" />
+                <Icon name="search" className="w-4 h-4 text-amber-800 absolute left-4" />
                 {searchQuery && (
                   <button onClick={() => setSearchQuery('')} className="absolute right-4 text-stone-400 hover:text-stone-600">
-                    <X className="w-4 h-4" />
+                    <Icon name="x" className="w-4 h-4" />
                   </button>
                 )}
               </div>
@@ -375,7 +380,7 @@ export default function App() {
                 className="relative p-2 text-stone-700 hover:text-amber-800 transition-colors"
                 title="Saved Wishlist"
               >
-                <Heart className="w-5 h-5" />
+                <Icon name="heart" className="w-5 h-5" />
                 {wishlist.length > 0 && (
                   <span className="absolute -top-1 -right-1 bg-amber-700 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                     {wishlist.length}
@@ -388,7 +393,7 @@ export default function App() {
                 className="relative p-2 text-stone-700 hover:text-amber-800 transition-colors"
                 title="Shopping Bag"
               >
-                <ShoppingBag className="w-5 h-5" />
+                <Icon name="shopping-bag" className="w-5 h-5" />
                 {cart.length > 0 && (
                   <span className="absolute -top-1 -right-1 bg-amber-800 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
                     {cart.reduce((a, c) => a + c.quantity, 0)}
@@ -404,7 +409,7 @@ export default function App() {
                     : 'bg-amber-50 text-amber-900 border-amber-800/30 hover:bg-amber-100'
                 }`}
               >
-                <LayoutDashboard className="w-3.5 h-3.5" />
+                <Icon name="layout-dashboard" className="w-3.5 h-3.5" />
                 <span>{currentView === 'admin' ? 'Exit Admin' : 'Admin Portal'}</span>
               </button>
             </div>
@@ -416,7 +421,6 @@ export default function App() {
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
           
           <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-amber-900 via-stone-800 to-amber-950 text-amber-50 shadow-xl p-8 sm:p-12">
-            <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:16px_16px]"></div>
             <div className="relative z-10 max-w-2xl space-y-4">
               <span className="inline-block px-3 py-1 bg-amber-800/60 border border-amber-500/30 rounded-full text-xs font-semibold tracking-wider text-amber-200 uppercase">
                 Directly from Rural Craft Hubs
@@ -433,14 +437,14 @@ export default function App() {
                   className="bg-amber-600 hover:bg-amber-500 text-white font-medium text-sm px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center space-x-2"
                 >
                   <span>Explore Home Decor</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <Icon name="chevron-right" className="w-4 h-4" />
                 </button>
                 <button 
                   onClick={() => setSelectedCategory('Traditional Edibles')}
                   className="bg-amber-950/80 hover:bg-amber-950 text-amber-200 border border-amber-700/50 font-medium text-sm px-5 py-2.5 rounded-xl transition-all flex items-center space-x-2"
                 >
                   <span>Explore Local Delights</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <Icon name="chevron-right" className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -523,7 +527,7 @@ export default function App() {
 
           {filteredProducts.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-amber-900/20">
-              <Package className="w-12 h-12 text-stone-400 mx-auto mb-3" />
+              <Icon name="package" className="w-12 h-12 text-stone-400 mx-auto mb-3" />
               <h3 className="text-lg font-bold text-stone-700">No handcrafted products match your search</h3>
               <p className="text-xs text-stone-500 mt-1">Try resetting filters or expanding your maximum price range.</p>
               <button 
@@ -552,7 +556,7 @@ export default function App() {
                         onClick={() => toggleWishlist(product.id)}
                         className="absolute top-3 right-3 p-2 rounded-full bg-white/80 backdrop-blur-md text-stone-700 hover:text-red-500 shadow-sm transition-colors"
                       >
-                        <Heart className={`w-4 h-4 ${wishlist.includes(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                        <Icon name="heart" className={`w-4 h-4 ${wishlist.includes(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
                       </button>
 
                       <span className="absolute bottom-3 left-3 px-2.5 py-1 bg-amber-950/80 backdrop-blur-md text-amber-100 text-[10px] font-semibold rounded-lg tracking-wider">
@@ -562,7 +566,7 @@ export default function App() {
 
                     <div className="p-5 space-y-3">
                       <div className="flex items-center space-x-1.5 text-xs text-amber-800 font-medium">
-                        <MapPin className="w-3.5 h-3.5 text-amber-700" />
+                        <Icon name="map-pin" className="w-3.5 h-3.5 text-amber-700" />
                         <span>{product.artisanName} • <span className="text-stone-500">{product.artisanRegion}</span></span>
                       </div>
 
@@ -576,7 +580,7 @@ export default function App() {
 
                       <div className="flex items-center justify-between text-xs pt-1">
                         <div className="flex items-center space-x-1 text-amber-600 font-semibold">
-                          <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                          <Icon name="star" className="w-3.5 h-3.5 text-amber-500" />
                           <span>{product.rating}</span>
                           <span className="text-stone-400 font-normal">({product.reviewsCount})</span>
                         </div>
@@ -603,14 +607,14 @@ export default function App() {
                         className="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors"
                         title="Quick View Details"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Icon name="eye" className="w-4 h-4" />
                       </button>
 
                       <button
                         onClick={() => addToCart(product)}
                         className="px-3 py-2 rounded-xl bg-amber-900 hover:bg-amber-800 text-amber-50 text-xs font-semibold shadow-sm transition-all flex items-center space-x-1.5"
                       >
-                        <ShoppingCart className="w-3.5 h-3.5" />
+                        <Icon name="shopping-cart" className="w-3.5 h-3.5" />
                         <span>Add</span>
                       </button>
                     </div>
@@ -619,30 +623,6 @@ export default function App() {
               ))}
             </div>
           )}
-
-          <div className="bg-amber-900/5 rounded-3xl p-8 border border-amber-900/10 my-12 flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="space-y-2 max-w-xl">
-              <span className="text-xs font-bold text-amber-800 uppercase tracking-widest">Our Mission</span>
-              <h3 className="text-2xl font-serif font-bold text-amber-950">Every FolkMade purchase directly supports local livelihoods</h3>
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                We eliminate middlemen commissions so regional weavers, potters, spice grinders, and sweet makers receive up to 80% direct revenue for their traditional craftsmanship.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full lg:w-auto">
-              <div className="bg-white p-4 rounded-2xl text-center border border-amber-900/10 shadow-sm">
-                <span className="block text-2xl font-serif font-bold text-amber-900">500+</span>
-                <span className="text-[11px] text-stone-500 uppercase tracking-wide">Artisans Onboard</span>
-              </div>
-              <div className="bg-white p-4 rounded-2xl text-center border border-amber-900/10 shadow-sm">
-                <span className="block text-2xl font-serif font-bold text-amber-900">100%</span>
-                <span className="text-[11px] text-stone-500 uppercase tracking-wide">Authentic Handmade</span>
-              </div>
-              <div className="bg-white p-4 rounded-2xl text-center border border-amber-900/10 shadow-sm col-span-2 sm:col-span-1">
-                <span className="block text-2xl font-serif font-bold text-amber-900">28+</span>
-                <span className="text-[11px] text-stone-500 uppercase tracking-wide">States Covered</span>
-              </div>
-            </div>
-          </div>
         </main>
       )}
 
@@ -658,13 +638,13 @@ export default function App() {
               className="text-xs font-semibold text-amber-800 hover:underline flex items-center space-x-1"
             >
               <span>Back to Marketplace</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              <Icon name="chevron-right" className="w-3.5 h-3.5" />
             </button>
           </div>
 
           {wishlist.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-3xl border border-amber-900/10 space-y-3">
-              <Heart className="w-12 h-12 text-stone-300 mx-auto" />
+              <Icon name="heart" className="w-12 h-12 text-stone-300 mx-auto" />
               <h3 className="text-lg font-bold text-stone-700">Your Wishlist is Empty</h3>
               <p className="text-xs text-stone-500">Explore traditional decor and edibles to save your favorites!</p>
               <button 
@@ -692,14 +672,14 @@ export default function App() {
                       onClick={() => addToCart(product)}
                       className="flex-1 py-2 bg-amber-900 text-amber-50 text-xs font-semibold rounded-xl flex items-center justify-center space-x-1"
                     >
-                      <ShoppingCart className="w-3.5 h-3.5" />
+                      <Icon name="shopping-cart" className="w-3.5 h-3.5" />
                       <span>Move to Cart</span>
                     </button>
                     <button 
                       onClick={() => toggleWishlist(product.id)}
                       className="p-2 text-stone-400 hover:text-red-500 rounded-xl bg-stone-100"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Icon name="trash-2" className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -731,7 +711,7 @@ export default function App() {
               }}
               className="bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs px-5 py-3 rounded-xl shadow-lg transition-all flex items-center space-x-2"
             >
-              <Plus className="w-4 h-4" />
+              <Icon name="plus" className="w-4 h-4" />
               <span>Add New Artisan Item</span>
             </button>
           </div>
@@ -759,26 +739,23 @@ export default function App() {
 
           <div className="flex border-b border-amber-900/10 space-x-6">
             {[
-              { id: 'products', label: 'Product Catalog Management', icon: Package },
-              { id: 'artisans', label: 'Local Artisans Directory', icon: Users },
-              { id: 'orders', label: 'Customer Orders', icon: ShoppingBag }
-            ].map(tab => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setAdminTab(tab.id)}
-                  className={`pb-3 flex items-center space-x-2 text-xs font-bold transition-all border-b-2 ${
-                    adminTab === tab.id 
-                      ? 'border-amber-800 text-amber-900' 
-                      : 'border-transparent text-stone-400 hover:text-stone-700'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
+              { id: 'products', label: 'Product Catalog Management', icon: 'package' },
+              { id: 'artisans', label: 'Local Artisans Directory', icon: 'users' },
+              { id: 'orders', label: 'Customer Orders', icon: 'shopping-bag' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setAdminTab(tab.id)}
+                className={`pb-3 flex items-center space-x-2 text-xs font-bold transition-all border-b-2 ${
+                  adminTab === tab.id 
+                    ? 'border-amber-800 text-amber-900' 
+                    : 'border-transparent text-stone-400 hover:text-stone-700'
+                }`}
+              >
+                <Icon name={tab.icon} className="w-4 h-4" />
+                <span>{tab.label}</span>
+              </button>
+            ))}
           </div>
 
           {adminTab === 'products' && (
@@ -827,14 +804,14 @@ export default function App() {
                             className="p-1.5 text-stone-600 hover:text-amber-800 rounded-lg hover:bg-stone-100"
                             title="Edit Product"
                           >
-                            <Edit2 className="w-4 h-4" />
+                            <Icon name="edit-2" className="w-4 h-4" />
                           </button>
                           <button 
                             onClick={() => handleDeleteProduct(p.id)}
                             className="p-1.5 text-stone-600 hover:text-red-600 rounded-lg hover:bg-stone-100"
                             title="Delete Product"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Icon name="trash-2" className="w-4 h-4" />
                           </button>
                         </td>
                       </tr>
@@ -853,7 +830,7 @@ export default function App() {
                     <div>
                       <h4 className="font-serif font-bold text-base text-amber-950">{artisan.name}</h4>
                       <div className="flex items-center space-x-1 text-xs text-amber-800">
-                        <MapPin className="w-3 h-3" />
+                        <Icon name="map-pin" className="w-3 h-3" />
                         <span>{artisan.region}</span>
                       </div>
                     </div>
@@ -900,22 +877,22 @@ export default function App() {
 
       {isCartOpen && (
         <div className="fixed inset-0 z-50 flex justify-end bg-stone-900/50 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between p-6 animate-in slide-in-from-right duration-300">
+          <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between p-6">
             
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-4 border-b border-stone-100">
                 <div className="flex items-center space-x-2">
-                  <ShoppingBag className="w-5 h-5 text-amber-900" />
+                  <Icon name="shopping-bag" className="w-5 h-5 text-amber-900" />
                   <h3 className="font-serif font-bold text-lg text-amber-950">Your FolkMade Bag</h3>
                 </div>
                 <button onClick={() => setIsCartOpen(false)} className="p-1 text-stone-400 hover:text-stone-700">
-                  <X className="w-5 h-5" />
+                  <Icon name="x" className="w-5 h-5" />
                 </button>
               </div>
 
               {cart.length === 0 ? (
                 <div className="text-center py-16 space-y-3">
-                  <ShoppingBag className="w-12 h-12 text-stone-300 mx-auto" />
+                  <Icon name="shopping-bag" className="w-12 h-12 text-stone-300 mx-auto" />
                   <p className="text-sm font-medium text-stone-600">Your bag is currently empty.</p>
                   <button 
                     onClick={() => setIsCartOpen(false)} 
@@ -942,7 +919,7 @@ export default function App() {
                           <button onClick={() => updateCartQty(item.id, 1)} className="px-2 py-1 text-stone-500 hover:text-amber-900">+</button>
                         </div>
                         <button onClick={() => removeFromCart(item.id)} className="text-stone-400 hover:text-red-500 p-1">
-                          <Trash2 className="w-4 h-4" />
+                          <Icon name="trash-2" className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -976,7 +953,7 @@ export default function App() {
                   className="w-full py-3 bg-amber-900 hover:bg-amber-800 text-amber-50 rounded-xl font-semibold text-xs shadow-md transition-all flex items-center justify-center space-x-2"
                 >
                   <span>Proceed to Secure Checkout</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <Icon name="arrow-right" className="w-4 h-4" />
                 </button>
               </div>
             )}
@@ -993,7 +970,7 @@ export default function App() {
               onClick={() => setSelectedProduct(null)} 
               className="absolute top-4 right-4 p-2 text-stone-400 hover:text-stone-700 rounded-full hover:bg-stone-100"
             >
-              <X className="w-5 h-5" />
+              <Icon name="x" className="w-5 h-5" />
             </button>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -1006,7 +983,7 @@ export default function App() {
                   </span>
                   <h3 className="font-serif font-bold text-xl text-amber-950">{selectedProduct.title}</h3>
                   <div className="flex items-center space-x-1 text-xs text-amber-800 font-medium">
-                    <MapPin className="w-3.5 h-3.5" />
+                    <Icon name="map-pin" className="w-3.5 h-3.5" />
                     <span>By {selectedProduct.artisanName} ({selectedProduct.artisanRegion})</span>
                   </div>
                   <div className="text-xl font-bold text-amber-900">₹{selectedProduct.price}</div>
@@ -1025,7 +1002,7 @@ export default function App() {
                   }}
                   className="w-full py-3 bg-amber-900 hover:bg-amber-800 text-amber-50 rounded-xl font-semibold text-xs shadow-md transition-all flex items-center justify-center space-x-2"
                 >
-                  <ShoppingCart className="w-4 h-4" />
+                  <Icon name="shopping-cart" className="w-4 h-4" />
                   <span>Add Item to Bag</span>
                 </button>
               </div>
@@ -1039,7 +1016,7 @@ export default function App() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-6 shadow-2xl relative">
             <button onClick={() => setIsCheckoutOpen(false)} className="absolute top-4 right-4 text-stone-400">
-              <X className="w-5 h-5" />
+              <Icon name="x" className="w-5 h-5" />
             </button>
 
             <div className="text-center space-y-1">
@@ -1104,7 +1081,7 @@ export default function App() {
               onClick={() => setIsProductModalOpen(false)} 
               className="absolute top-4 right-4 text-stone-400 hover:text-stone-700"
             >
-              <X className="w-5 h-5" />
+              <Icon name="x" className="w-5 h-5" />
             </button>
 
             <div className="space-y-1">
@@ -1236,3 +1213,7 @@ export default function App() {
     </div>
   );
 }
+
+// Render React App to Root element
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
