@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Handmade India</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Handmade India</h1>
+  <p>Traditional Products Made by Indian Artisans</p>
+</header>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#products">Products</a>
+  <a href="#about">About Us</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<section id="home" class="hero">
+  <h2>Discover Beautiful Handmade Products</h2>
+  <p>Support local artisans and explore traditional Indian products.</p>
+  <button onclick="showMessage()">Explore Now</button>
+</section>
+
+<section id="products">
+  <h2 class="title">Our Products</h2>
+
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Search product..." onkeyup="searchProducts()">
+  </div>
+
+  <div class="products">
+
+    <div class="product">
+      <img src="https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?auto=format&fit=crop&q=80&w=600" alt="Blue Pottery Vase">
+      <h3>Blue Pottery Flower Vase</h3>
+      <p>Handmade pottery from Jaipur</p>
+      <h4>₹1,299</h4>
+      <button onclick="addToCart('Blue Pottery Flower Vase')">Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&q=80&w=600" alt="Mango Pickle">
+      <h3>Traditional Mango Pickle</h3>
+      <p>Authentic Andhra-style pickle</p>
+      <h4>₹349</h4>
+      <button onclick="addToCart('Traditional Mango Pickle')">Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=80&w=600" alt="Wooden Wall Hanging">
+      <h3>Teakwood Wall Hanging</h3>
+      <p>Hand-carved wooden decoration</p>
+      <h4>₹2,499</h4>
+      <button onclick="addToCart('Teakwood Wall Hanging')">Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=600" alt="Tea">
+      <h3>Himalayan Tea Blend</h3>
+      <p>Organic tea from Darjeeling</p>
+      <h4>₹499</h4>
+      <button onclick="addToCart('Himalayan Tea Blend')">Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&q=80&w=600" alt="Dhurrie">
+      <h3>Handwoven Dhurrie Mat</h3>
+      <p>Traditional cotton floor mat</p>
+      <h4>₹1,850</h4>
+      <button onclick="addToCart('Handwoven Dhurrie Mat')">Add to Cart</button>
+    </div>
+
+    <div class="product">
+      <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=600" alt="Soan Papdi">
+      <h3>Handmade Soan Papdi</h3>
+      <p>Traditional Indian sweet</p>
+      <h4>₹599</h4>
+      <button onclick="addToCart('Handmade Soan Papdi')">Add to Cart</button>
+    </div>
+
+  </div>
+</section>
+
+<section id="about" class="about">
+  <h2>About Us</h2>
+  <p>
+    Handmade India is a platform that helps customers discover traditional
+    handmade products made by Indian artisans. Our goal is to support local
+    craftsmen and promote Indian culture.
+  </p>
+</section>
+
+<section id="contact" class="contact">
+  <h2>Contact Us</h2>
+  <p>Email: handmadeindia@example.com</p>
+  <p>Phone: +91 98765 43210</p>
+</section>
+
+<footer>
+  <p>© 2026 Handmade India | Supporting Indian Artisans</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
