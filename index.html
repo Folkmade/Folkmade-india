@@ -1,109 +1,65 @@
-<!DOCTYPEHTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Folk-Made</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FolkMade - Handcrafted Traditions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="toast" class="toast hidden"></div>
 
-<header>
-  <h1>Folk-Made</h1>
-  <p>Traditional Products Made by Indian Artisans</p>
-</header>
+  <div class="top-strip">🏪 <span>Empowering 500+ Rural Artisans & Traditional Food Creators across India. Free shipping on orders over ₹999!</span></div>
 
-<nav>
-  <a href="#home">Home</a>
-  <a href="#products">Products</a>
-  <a href="#about">About Us</a>
-  <a href="#contact">Contact</a>
-</nav>
+  <header class="header">
+    <div class="header-inner">
+      <button class="brand" onclick="showView('shop')">
+        <div class="brand-mark">FM</div>
+        <div>
+          <div class="brand-name">FolkMade</div>
+          <div class="brand-tag">HANDCRAFTED TRADITIONS</div>
+        </div>
+      </button>
 
-<section id="home" class="hero">
-  <h2>Discover Beautiful Handmade Products</h2>
-  <p>Support local artisans and explore traditional Indian products.</p>
-  <button onclick="showMessage()">Explore Now</button>
-</section>
+      <div class="search-wrap" id="desktopSearch">
+        <input id="searchInput" type="text" placeholder="Search handmade pots, pickles, wooden decor, teas..." oninput="renderShop()">
+        <span>⌕</span>
+        <button onclick="clearSearch()" id="clearSearch">×</button>
+      </div>
 
-<section id="products">
-  <h2 class="title">Our Products</h2>
+      <nav class="nav-actions">
+        <button id="shopBtn" class="nav-btn active" onclick="showView('shop')">Shop Marketplace</button>
+        <button class="icon-btn" title="Saved Wishlist" onclick="showView('wishlist')">♡<b id="wishCount"></b></button>
+        <button class="icon-btn" title="Shopping Bag" onclick="openCart()">🛍<b id="cartCount"></b></button>
+        <button id="adminBtn" class="admin-btn" onclick="toggleAdmin()">▣ <span id="adminText">Admin Portal</span></button>
+      </nav>
+    </div>
+  </header>
 
-  <div class="search-box">
-    <input type="text" id="search" placeholder="Search product..." onkeyup="searchProducts()">
+  <main id="app"></main>
+
+  <div id="modal" class="modal hidden" onclick="closeModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="hideModal()">×</button>
+      <div id="modalContent"></div>
+    </div>
   </div>
 
-  <div class="products">
-
-    <div class="product">
-      <img src="https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?auto=format&fit=crop&q=80&w=600" alt="Blue Pottery Vase">
-      <h3>Blue Pottery Flower Vase</h3>
-      <p>Handmade pottery from Jaipur</p>
-      <h4>₹1,299</h4>
-      <button onclick="addToCart('Blue Pottery Flower Vase')">Add to Cart</button>
+  <aside id="cartPanel" class="cart-panel">
+    <div class="cart-head"><h2>Your Shopping Bag</h2><button onclick="closeCart()">×</button></div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-footer">
+      <div><span>Subtotal</span><strong id="cartSubtotal">₹0</strong></div>
+      <div><span>Shipping</span><strong id="shipping">Free</strong></div>
+      <div class="grand"><span>Total</span><strong id="grandTotal">₹0</strong></div>
+      <button class="primary full" onclick="checkout()">Proceed to Checkout</button>
     </div>
+  </aside>
+  <div id="overlay" class="overlay hidden" onclick="closeCart()"></div>
 
-    <div class="product">
-      <img src="https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&q=80&w=600" alt="Mango Pickle">
-      <h3>Traditional Mango Pickle</h3>
-      <p>Authentic Andhra-style pickle</p>
-      <h4>₹349</h4>
-      <button onclick="addToCart('Traditional Mango Pickle')">Add to Cart</button>
-    </div>
-
-    <div class="product">
-      <img src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=80&w=600" alt="Wooden Wall Hanging">
-      <h3>Teakwood Wall Hanging</h3>
-      <p>Hand-carved wooden decoration</p>
-      <h4>₹2,499</h4>
-      <button onclick="addToCart('Teakwood Wall Hanging')">Add to Cart</button>
-    </div>
-
-    <div class="product">
-      <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=600" alt="Tea">
-      <h3>Himalayan Tea Blend</h3>
-      <p>Organic tea from Darjeeling</p>
-      <h4>₹499</h4>
-      <button onclick="addToCart('Himalayan Tea Blend')">Add to Cart</button>
-    </div>
-
-    <div class="product">
-      <img src="https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&q=80&w=600" alt="Dhurrie">
-      <h3>Handwoven Dhurrie Mat</h3>
-      <p>Traditional cotton floor mat</p>
-      <h4>₹1,850</h4>
-      <button onclick="addToCart('Handwoven Dhurrie Mat')">Add to Cart</button>
-    </div>
-
-    <div class="product">
-      <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=600" alt="Soan Papdi">
-      <h3>Handmade Soan Papdi</h3>
-      <p>Traditional Indian sweet</p>
-      <h4>₹599</h4>
-      <button onclick="addToCart('Handmade Soan Papdi')">Add to Cart</button>
-    </div>
-
-  </div>
-</section>
-
-<section id="about" class="about">
-  <h2>About Us</h2>
-  <p>
-    Folk-Made is a platform that helps customers discover traditional
-    handmade products made by Indian artisans. Our goal is to support local
-    craftsmen and promote Indian culture.
-  </p>
-</section>
-
-<section id="contact" class="contact">
-  <h2>Contact Us</h2>
-  <p></mail>Email: folkmadesupport@gmail.com</p>
-  <p>Phone: +91 7499162587</p>
-</section>
-
-<footer>
-  <p>© Folk-Made | Supporting Indian Artisans</p>
-</footer>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
-</html> 
-
+</html>
