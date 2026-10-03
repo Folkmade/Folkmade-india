@@ -1,65 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FolkMade - Handcrafted Traditions</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FolkMade — Handcrafted Traditions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="toast" class="toast hidden"></div>
-
-  <div class="top-strip">🏪 <span>Empowering 500+ Rural Artisans & Traditional Food Creators across India. Free shipping on orders over ₹999!</span></div>
-
-  <header class="header">
-    <div class="header-inner">
-      <button class="brand" onclick="showView('shop')">
-        <div class="brand-mark">FM</div>
-        <div>
-          <div class="brand-name">FolkMade</div>
-          <div class="brand-tag">HANDCRAFTED TRADITIONS</div>
-        </div>
-      </button>
-
-      <div class="search-wrap" id="desktopSearch">
-        <input id="searchInput" type="text" placeholder="Search handmade pots, pickles, wooden decor, teas..." oninput="renderShop()">
-        <span>⌕</span>
-        <button onclick="clearSearch()" id="clearSearch">×</button>
-      </div>
-
-      <nav class="nav-actions">
-        <button id="shopBtn" class="nav-btn active" onclick="showView('shop')">Shop Marketplace</button>
-        <button class="icon-btn" title="Saved Wishlist" onclick="showView('wishlist')">♡<b id="wishCount"></b></button>
-        <button class="icon-btn" title="Shopping Bag" onclick="openCart()">🛍<b id="cartCount"></b></button>
-        <button id="adminBtn" class="admin-btn" onclick="toggleAdmin()">▣ <span id="adminText">Admin Portal</span></button>
-      </nav>
+<div id="toast" class="toast hidden"></div>
+<div class="top-strip">🛍️ Empowering 500+ Rural Artisans & Traditional Food Creators across India. Free shipping on orders over ₹999!</div>
+<header class="header">
+  <div class="header-inner">
+    <div class="brand" onclick="showView('shop')">
+      <div class="brand-mark">FM</div><div><div class="brand-name">FolkMade</div><div class="brand-tag">Handcrafted Traditions</div></div>
     </div>
-  </header>
-
-  <main id="app"></main>
-
-  <div id="modal" class="modal hidden" onclick="closeModal(event)">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="hideModal()">×</button>
-      <div id="modalContent"></div>
-    </div>
+    <div id="desktopSearch" class="search-wrap"><input id="searchInput" placeholder="Search handmade pots, pickles, wooden decor, teas..."><span>⌕</span><button onclick="clearSearch()">×</button></div>
+    <nav class="nav-actions">
+      <button id="shopBtn" class="nav-btn" onclick="showView('shop')">Shop Marketplace</button>
+      <button class="icon-btn" onclick="showView('wishlist')" title="Saved Wishlist">♡<span id="wishCount" class="count"></span></button>
+      <button class="icon-btn" onclick="openCart()" title="Shopping Bag">🛍<span id="cartCount" class="count"></span></button>
+      <button id="accountBtn" class="account-btn" onclick="openAuth()">👤 Login / Register</button>
+    </nav>
   </div>
+</header>
+<main id="app"></main>
 
-  <aside id="cartPanel" class="cart-panel">
-    <div class="cart-head"><h2>Your Shopping Bag</h2><button onclick="closeCart()">×</button></div>
-    <div id="cartItems" class="cart-items"></div>
-    <div class="cart-footer">
-      <div><span>Subtotal</span><strong id="cartSubtotal">₹0</strong></div>
-      <div><span>Shipping</span><strong id="shipping">Free</strong></div>
-      <div class="grand"><span>Total</span><strong id="grandTotal">₹0</strong></div>
-      <button class="primary full" onclick="checkout()">Proceed to Checkout</button>
-    </div>
-  </aside>
-  <div id="overlay" class="overlay hidden" onclick="closeCart()"></div>
+<!-- Cart -->
+<div id="overlay" class="overlay hidden" onclick="closeCart()"></div>
+<aside id="cartPanel" class="cart-panel">
+  <div class="cart-head"><h2>Shopping Bag</h2><button onclick="closeCart()">×</button></div>
+  <div id="cartItems" class="cart-items"></div>
+  <div class="cart-footer"><div><span>Subtotal</span><b id="cartSubtotal">₹0</b></div><div><span>Shipping</span><b id="shipping">Free</b></div><div class="grand"><span>Total</span><b id="grandTotal">₹0</b></div><button class="primary full" onclick="checkout()">Checkout</button></div>
+</aside>
 
-  <script src="script.js"></script>
+<!-- Product / Admin modal -->
+<div id="modal" class="modal hidden" onclick="closeModal(event)"><div class="modal-card"><button class="modal-close" onclick="hideModal()">×</button><div id="modalContent"></div></div></div>
+
+<!-- Login / Registration -->
+<div id="authModal" class="modal hidden" onclick="closeAuth(event)">
+  <div class="modal-card auth-box">
+    <button class="modal-close" onclick="closeAuth()">×</button>
+    <div id="authContent"></div>
+  </div>
+</div>
+<script src="script.js"></script>
 </body>
 </html>

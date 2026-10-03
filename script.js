@@ -14,6 +14,9 @@ const artisans=[
 {id:'a4',name:'Sonam Norbu',region:'Darjeeling, WB',specialty:'Organic Herbal Teas',experience:'15 Years',status:'Verified',productsCount:5,bio:'Nurturing small tea growers in high Himalayas for ethical and sustainable tea production.'}
 ];
 
+let currentUser=JSON.parse(localStorage.getItem('folkmadeUser')||'null');
+let registeredUsers=JSON.parse(localStorage.getItem('folkmadeUsers')||'[]');
+
 let state={
 view:'shop',category:'All',search:'',sort:'featured',price:3000,
 cart:[],wishlist:['p1','p4'],adminTab:'products',
@@ -27,7 +30,7 @@ const $=id=>document.getElementById(id);
 function money(n){return '₹'+Number(n).toLocaleString('en-IN')}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),2500)}
 function showView(v){state.view=v;render();window.scrollTo({top:0,behavior:'smooth'})}
-function toggleAdmin(){showView(state.view==='admin'?'shop':'admin')}
+function toggleAdmin(){showView('shop')}
 function clearSearch(){state.search='';$('searchInput').value='';renderShop()}
 function setCategory(c){state.category=c;renderShop()}
 function filtered(){
@@ -100,12 +103,15 @@ ${state.adminTab==='products'?`<div class="table-wrap"><table class="table"><the
 }
 function render(){
 $('shopBtn').classList.toggle('active',state.view==='shop');
-$('adminBtn').classList.toggle('active',state.view==='admin');
-$('adminText').textContent=state.view==='admin'?'Exit Admin':'Admin Portal';
 $('desktopSearch').classList.toggle('hidden',state.view!=='shop');
 $('wishCount').textContent=state.wishlist.length||'';
 $('cartCount').textContent=state.cart.reduce((a,c)=>a+c.qty,0)||'';
-if(state.view==='shop')renderShop();else if(state.view==='wishlist')renderWishlist();else if(state.view==='about')renderAbout();else renderAdmin();
+let ab=$('accountBtn');if(ab)ab.innerHTML=currentUser?`👤 ${currentUser.name||currentUser.role} · Logout`:'👤 Login / Register';
+if(state.view==='shop')renderShop();
+else if(state.view==='wishlist')renderWishlist();
+else if(state.view==='about')renderAbout();
+else if(state.view==='seller')renderSeller();
+else renderShop();
 }
 function toggleWish(id){if(state.wishlist.includes(id)){state.wishlist=state.wishlist.filter(x=>x!==id);toast('Removed from Wishlist')}else{state.wishlist.push(id);toast('Saved to Wishlist!')}render()}
 function addCart(id){let p=products.find(x=>x.id===id),x=state.cart.find(x=>x.id===id);if(x)x.qty++;else state.cart.push({id,qty:1});toast(`Added "${p.title}" to your cart!`);render()}
@@ -145,6 +151,80 @@ $('modal').classList.remove('hidden')
 }
 function saveProduct(e,id){e.preventDefault();let p={id:id||'p_'+Date.now(),title:$('f-title').value,category:$('f-cat').value,subCategory:$('f-sub').value||'General',price:+$('f-price').value,originalPrice:+$('f-original').value||Math.round(+$('f-price').value*1.2),rating:id?(products.find(x=>x.id===id)?.rating||5):5,reviewsCount:id?(products.find(x=>x.id===id)?.reviewsCount||1):1,artisanName:$('f-artisan').value,artisanRegion:$('f-region').value,image:$('f-image').value||'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=600',description:$('f-desc').value,materials:$('f-materials').value,inStock:+$('f-stock').value||10,isFeatured:false,isBestseller:false};if(id){let i=products.findIndex(x=>x.id===id);products[i]=p;toast('Product details updated successfully!')}else{products.unshift(p);toast('New handcrafted product added to store!')}hideModal();render()}
 function deleteProduct(id){if(confirm('Are you sure you want to delete this product from the marketplace?')){let i=products.findIndex(x=>x.id===id);products.splice(i,1);toast('Product removed from FolkMade catalog');renderAdmin()}}
+
+
+
+/* ================= AUTH ================= */
+function openAuth(){
+  if(currentUser){
+    logout();
+    return;
+  }
+  showLogin();
+  $('authModal').classList.remove('hidden');
+}
+function closeAuth(e){
+  if(!e || e.target.id==='authModal') $('authModal').classList.add('hidden');
+}
+function showLogin(){
+  $('authContent').innerHTML=`
+    <h2 class="auth-title">Welcome to FolkMade</h2>
+    <p class="auth-subtitle">Login to continue to your FolkMade account.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="showLogin()">Login</button>
+      <button class="auth-tab" onclick="showRegister()">Create Account</button>
+    </div>
+    <form onsubmit="loginUser(event)">
+      <div class="field"><label>Login as</label><select id="login-role"><option value="user">User</option><option value="admin">Admin</option><option value="seller">Seller</option></select></div>
+      <div class="field"><label>Email</label><input id="login-email" type="email" placeholder="Enter your email" required></div>
+      <div class="field"><label>Password</label><input id="login-password" type="password" placeholder="Enter your password" required></div>
+      <button class="primary full" type="submit">Login</button>
+    </form>
+    <p class="auth-switch">New to FolkMade? <button onclick="showRegister()">Create a new account</button></p>`;
+}
+function showRegister(){
+  $('authContent').innerHTML=`
+    <h2 class="auth-title">Create Your Account</h2>
+    <p class="auth-subtitle">Join FolkMade as a customer or seller.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab" onclick="showLogin()">Login</button>
+      <button class="auth-tab active" onclick="showRegister()">Create Account</button>
+    </div>
+    <form onsubmit="registerUser(event)">
+      <div class="field"><label>Register as</label><select id="reg-role"><option value="user">User / Customer</option><option value="seller">Seller</option></select></div>
+      <div class="field"><label>Full Name</label><input id="reg-name" placeholder="Enter your full name" required></div>
+      <div class="field"><label>Email</label><input id="reg-email" type="email" placeholder="Enter your email" required></div>
+      <div class="field"><label>Phone</label><input id="reg-phone" type="tel" placeholder="Enter phone number" required></div>
+      <div class="field"><label>Password</label><input id="reg-password" type="password" placeholder="Create password" required></div>
+      <div class="field"><label>Confirm Password</label><input id="reg-confirm" type="password" placeholder="Confirm password" required></div>
+      <button class="primary full" type="submit">Create Account</button>
+    </form>
+    <p class="auth-switch">Already registered? <button onclick="showLogin()">Login here</button></p>`;
+}
+function loginUser(e){
+  e.preventDefault();
+  const role=$('login-role').value,email=$('login-email').value.trim().toLowerCase(),password=$('login-password').value;
+  if(role==='admin'){
+    if(email==='admin@folkmade.in' && password==='admin123'){
+      currentUser={name:'Admin',email,role:'admin'};localStorage.setItem('folkmadeUser',JSON.stringify(currentUser));$('authModal').classList.add('hidden');state.view='admin';toast('Admin login successful');render();return;
+    }
+    return toast('Invalid admin email or password');
+  }
+  const user=registeredUsers.find(u=>u.email===email&&u.password===password&&u.role===role);
+  if(!user)return toast('Account not found. Please check your details or register first.');
+  currentUser=user;localStorage.setItem('folkmadeUser',JSON.stringify(user));$('authModal').classList.add('hidden');state.view=role==='seller'?'seller':'shop';toast(`Welcome ${user.name}!`);render();
+}
+function registerUser(e){
+  e.preventDefault();
+  const role=$('reg-role').value,name=$('reg-name').value.trim(),email=$('reg-email').value.trim().toLowerCase(),phone=$('reg-phone').value.trim(),password=$('reg-password').value,confirm=$('reg-confirm').value;
+  if(password!==confirm)return toast('Passwords do not match');
+  if(registeredUsers.some(u=>u.email===email))return toast('This email is already registered');
+  const user={name,email,phone,password,role};registeredUsers.push(user);localStorage.setItem('folkmadeUsers',JSON.stringify(registeredUsers));currentUser=user;localStorage.setItem('folkmadeUser',JSON.stringify(user));$('authModal').classList.add('hidden');state.view=role==='seller'?'seller':'shop';toast('Account created successfully!');render();
+}
+function logout(){currentUser=null;localStorage.removeItem('folkmadeUser');state.view='shop';toast('Logged out successfully');render();}
+function renderSeller(){
+  $('app').innerHTML=`<div class="container"><div class="section-title"><div><h2>Seller Dashboard</h2><p>Welcome, ${currentUser?.name||'Seller'}! You can manage your products from here.</p></div><button class="primary" onclick="openAdd()">+ Add Product</button></div><div class="stat-grid"><div class="stat"><small>Marketplace Products</small><strong>${products.length}</strong></div><div class="stat"><small>Your Account</small><strong>Seller</strong></div></div><div class="info-card" style="margin-top:18px"><h3>Start Selling on FolkMade</h3><p>Add your handmade products with their name, price, image, description and stock. In the final database version, these products will be saved permanently for customers across India.</p><button class="primary" onclick="openAdd()">Add Your Product</button></div></div>`;
+}
 
 $('searchInput').addEventListener('input',()=>{state.search=$('searchInput').value;renderShop()});
 render();
