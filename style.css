@@ -13,7 +13,10 @@
 .auth-switch button{background:none;color:#92400e;font-weight:800}
 .auth-note{background:#fffbeb;border:1px solid #d9770633;border-radius:10px;padding:10px;font-size:11px;color:#78350f;margin-bottom:14px}
 @media(max-width:650px){.account-btn{font-size:11px;padding:8px 9px}.auth-box{padding:20px!important}}
-.brand-container {
+
+
+.brand-container 
+{
   display: flex;
   align-items: center;
   gap: 12px;
