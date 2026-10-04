@@ -13,3 +13,24 @@
 .auth-switch button{background:none;color:#92400e;font-weight:800}
 .auth-note{background:#fffbeb;border:1px solid #d9770633;border-radius:10px;padding:10px;font-size:11px;color:#78350f;margin-bottom:14px}
 @media(max-width:650px){.account-btn{font-size:11px;padding:8px 9px}.auth-box{padding:20px!important}}
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  height: 50px; /* Adjust height (e.g., 40px to 60px) based on your header height */
+  width: auto;  /* Maintains proper aspect ratio without stretching */
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.brand-tag {
+  font-size: 0.85rem;
+  color: #666;
+}
