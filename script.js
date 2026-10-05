@@ -511,6 +511,7 @@ const ADMIN_ACCOUNT = { name: 'FolkMade Admin', email: 'admin@folkmade.in', pass
 
 const $ = id => document.getElementById(id);
 function money(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+
 function toast(msg) { 
   let t = $('toast');
   if(!t) return;
@@ -685,7 +686,10 @@ function openEditProductModal(id) { showProductForm(products.find(p => p.id === 
 
 function showProductForm(p) {
   p = p || { id: '', title: '', subCategory: 'Pottery & Ceramics', price: '', originalPrice: '', inStock: 10, image: '', description: '' };
-  $('modalContent').innerHTML = `
+  let modalContent = $('modalContent');
+  if(!modalContent) return;
+
+  modalContent.innerHTML = `
     <h3>${p.id ? 'Edit Product' : 'Add New Product'}</h3>
     <form onsubmit="saveProduct(event, '${p.id}')">
       <div class="form-grid">
@@ -700,7 +704,7 @@ function showProductForm(p) {
       <button class="primary full" type="submit" style="margin-top:15px;">Save Listing</button>
     </form>
   `;
-  $('modal').classList.remove('hidden');
+  $('modal')?.classList.remove('hidden');
 }
 
 function saveProduct(e, id) {
@@ -731,7 +735,7 @@ function saveProduct(e, id) {
     products.unshift(newProd);
     toast('New product published!');
   }
-  $('modal').classList.add('hidden');
+  $('modal')?.classList.add('hidden');
   if (currentUser && currentUser.role === 'seller') renderSeller();
   else render();
 }
@@ -746,26 +750,29 @@ function deleteProduct(id) {
   }
 }
 
-/* ACCOUNT AUTHENTICATION & DIALOG MODAL HANDLERS */
+/* ACCOUNT AUTHENTICATION & MODAL CONTROLS */
 function getRegisteredUsers() {
   try { return JSON.parse(localStorage.getItem('folkmade_users') || '[]'); } catch (e) { return []; }
 }
 
 function openAuth() { 
   showLoginForm(); 
-  let m = $('authModal');
-  if(m) m.classList.remove('hidden'); 
+  let authModal = $('authModal') \vert{}\vert{}$('modal');
+  if(authModal) authModal.classList.remove('hidden'); 
 }
 
 function closeAuth(e) { 
-  if (!e || e.target.id === 'authModal' || e.target.classList.contains('modal-close')) {
-    let m = $('authModal');
-    if(m) m.classList.add('hidden'); 
-  }
+  let m1 = $('authModal');
+  let m2 = $('modal');
+  if (m1) m1.classList.add('hidden');
+  if (m2) m2.classList.add('hidden');
 }
 
 function showLoginForm(message = '') {
-  $('authContent').innerHTML = `
+  let target = $('authContent') \vert{}\vert{}$('modalContent');
+  if(!target) return;
+
+  target.innerHTML = `
     <h2>Welcome to FolkMade</h2>
     ${message ? `<div style="background:#d4edda;color:#155724;padding:8px;margin-bottom:10px;border-radius:4px;">${message}</div>` : ''}
     <form onsubmit="loginAccount(event)">
@@ -777,10 +784,16 @@ function showLoginForm(message = '') {
     </form>
     <p style="font-size:12px;margin-top:12px;">New user? <button type="button" style="background:none;color:#b45309;font-weight:700;border:0;cursor:pointer;" onclick="showRegisterForm()">Create account</button></p>
   `;
+  
+  let modal = $('authModal') \vert{}\vert{}$('modal');
+  if(modal) modal.classList.remove('hidden');
 }
 
 function showRegisterForm() {
-  $('authContent').innerHTML = `
+  let target = $('authContent') \vert{}\vert{}$('modalContent');
+  if(!target) return;
+
+  target.innerHTML = `
     <h2>Create FolkMade Account</h2>
     <form onsubmit="registerAccount(event)">
       <div class="field"><label>Register as</label><select id="reg-role" required><option value="user">Buyer</option><option value="seller">Seller</option></select></div>
@@ -809,13 +822,18 @@ function loginAccount(e) {
   }
 
   if (!account) {
-    $('login-error').innerHTML = '<div style="color:red;font-size:12px;margin-top:8px;">Invalid email, password, or role choice.</div>';
+    let err = $('login-error');
+    if(err) err.innerHTML = '<div style="color:red;font-size:12px;margin-top:8px;">Invalid email, password, or role.</div>';
     return;
   }
 
   currentUser = { name: account.name, email: account.email, role: account.role };
   localStorage.setItem('folkmade_current_user', JSON.stringify(currentUser));
-  $('authModal').classList.add('hidden');
+  
+  let m1 = $('authModal');
+  let m2 = $('modal');
+  if(m1) m1.classList.add('hidden');
+  if(m2) m2.classList.add('hidden');
 
   if (currentUser.role === 'admin') state.view = 'admin';
   else if (currentUser.role === 'seller') state.view = 'seller';
@@ -834,7 +852,11 @@ function registerAccount(e) {
   const password = $('reg-password').value;
   const confirm = $('reg-confirm').value;
 
-  if (password !== confirm) { $('register-error').innerHTML = '<div style="color:red;font-size:12px;">Passwords do not match.</div>'; return; }
+  if (password !== confirm) { 
+    let err = $('register-error');
+    if(err) err.innerHTML = '<div style="color:red;font-size:12px;">Passwords do not match.</div>'; 
+    return; 
+  }
 
   let users = getRegisteredUsers();
   users.push({ name, email, phone, password, role });
@@ -893,53 +915,4 @@ function changeQty(id, d) {
 }
 
 function removeCart(id) { 
-  state.cart = state.cart.filter(x => x.id !== id); 
-  updateCart(); 
-}
-
-function openCart() { 
-  updateCart(); 
-  $('overlay').classList.remove('hidden');$('cartPanel').classList.add('open'); 
-}
-
-function closeCart() { 
-  $('overlay').classList.add('hidden');$('cartPanel').classList.remove('open'); 
-}
-
-function updateCart() {
-  let subtotal = state.cart.reduce((s, x) => { let p = products.find(p => p.id === x.id); return s + (p ? p.price * x.qty : 0); }, 0);
-  $('cartSubtotal').textContent = money(subtotal);
-  $('grandTotal').textContent = money(subtotal);$('cartItems').innerHTML = state.cart.length ? state.cart.map(x => { let p = products.find(p => p.id === x.id); return `<div class="cart-item"><img src="${p.image}"><div><h4>${p.title}</h4><small>${money(p.price)}</small><div style="margin-top:5px;"><button onclick="changeQty('${p.id}',-1)">−</button> <b>${x.qty}</b> <button onclick="changeQty('${p.id}',1)">+</button></div></div><button class="small-btn danger" onclick="removeCart('${p.id}')">×</button></div>`; }).join('') : `<div style="text-align:center;padding:20px;">Shopping bag is empty.</div>`;
-  render();
-}
-
-function checkout() { 
-  if (!state.cart.length) return toast('Your cart is empty'); 
-  alert('Order placed successfully!'); 
-  state.cart = []; 
-  closeCart(); 
-  toast('Order placed!'); 
-}
-
-function openProduct(id) { 
-  let p = products.find(x => x.id === id); 
-  $('modalContent').innerHTML = `<div><img src="${p.image}" style="width:100%;height:250px;object-fit:cover;border-radius:6px;"><h2>${p.title}</h2><p>${p.description}</p><h3>${money(p.price)}</h3><button class="primary full" onclick="addCart('${p.id}');$('modal').classList.add('hidden');">Add to Cart</button></div>`; 
-  $('modal').classList.remove('hidden'); 
-}
-
-function render() {
-  renderAccountButton();
-  if (state.view === 'seller' && (!currentUser || currentUser.role !== 'seller')) state.view = 'shop';
-  if (state.view === 'admin' && (!currentUser || currentUser.role !== 'admin')) state.view = 'shop';
-
-  if ($('wishCount'))$('wishCount').textContent = state.wishlist.length || '0';
-  if ($('cartCount'))$('cartCount').textContent = state.cart.reduce((a, c) => a + c.qty, 0) || '0';
-
-  if (state.view === 'seller') renderSeller();
-  else if (state.view === 'admin') renderAdmin();
-  else if (state.view === 'wishlist') renderWishlist();
-  else renderShop();
-}
-
-$('searchInput')?.addEventListener('input', () => { state.search =$('searchInput').value; renderShop(); });
-render();
+  state.cart = state.cart.filter(x => x.id !== id);
