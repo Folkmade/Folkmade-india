@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!---    <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -29,7 +29,7 @@
 <main id="app"></main>
 
 <!-- Cart -->
-<div id="overlay" class="overlay hidden" onclick="closeCart()"></div>
+<!---         <div id="overlay" class="overlay hidden" onclick="closeCart()"></div>
 <aside id="cartPanel" class="cart-panel">
   <div class="cart-head"><h2>Shopping Bag</h2><button onclick="closeCart()">×</button></div>
   <div id="cartItems" class="cart-items"></div>
@@ -37,10 +37,10 @@
 </aside>
 
 <!-- Product / Admin modal -->
-<div id="modal" class="modal hidden" onclick="closeModal(event)"><div class="modal-card"><button class="modal-close" onclick="hideModal()">×</button><div id="modalContent"></div></div></div>
+<!---    <div id="modal" class="modal hidden" onclick="closeModal(event)"><div class="modal-card"><button class="modal-close" onclick="hideModal()">×</button><div id="modalContent"></div></div></div>
 
 <!-- Login / Registration -->
-<div id="authModal" class="modal hidden" onclick="closeAuth(event)">
+<!---<div id="authModal" class="modal hidden" onclick="closeAuth(event)">
   <div class="modal-card auth-box">
     <button class="modal-close" onclick="closeAuth()">×</button>
     <div id="authContent"></div>
@@ -48,4 +48,54 @@
 </div>
 <script src="script.js"></script>
 </body>
+</html>--->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FolkMade — Online Shopping for Handcrafted Traditions</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="toast" class="top-strip hidden">Notification Message</div>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand" onclick="state.view='shop';render();">
+      <div class="brand-mark"><img src="https://github.com/Folkmade/Folkmade-india/blob/5bc0577318ebf109eb871e218d84d7c98be5719e/README.md" alt="FolkMade Logo"></div>
+      <div>
+        <div class="brand-name">FolkMade</div>
+        <div class="brand-tag">Handcrafted Traditions</div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <input id="searchInput" placeholder="Search for hand pottery, wooden decor, artifacts..." oninput="renderShop()">
+      <button class="search-btn">🔍</button>
+    </div>
+
+    <nav class="nav-actions">
+      <button class="nav-item-btn" onclick="state.view='shop';render();">Store</button>
+      <button class="nav-item-btn">♡ Wishlist <span id="wishCount" class="badge-count">0</span></button>
+      <button class="nav-item-btn">🛍 Bag <span id="cartCount" class="badge-count">0</span></button>
+      <button id="accountBtn" class="account-badge">👤 Login / Register</button>
+    </nav>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<!-- Unified Modal Container -->
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <button class="modal-close" onclick="$('modal').classList.add('hidden')">×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
 </html>
+
