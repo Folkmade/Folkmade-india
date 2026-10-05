@@ -751,7 +751,7 @@ button {
   border: 0;
 }
 
-/* Amazon / Flipkart Style Navigation Header */
+/* Amazon / Flipkart Dark Navigation Header */
 .top-strip {
   background: #232f3e;
   color: #febd69;
@@ -759,6 +759,19 @@ button {
   font-weight: 600;
   padding: 6px 15px;
   text-align: center;
+}
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #131921;
+  color: #febd69;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 300;
 }
 .header {
   position: sticky;
@@ -783,12 +796,13 @@ button {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  text-decoration: none;
   color: #fff;
+  background: none;
+  padding: 0;
 }
 .brand-mark img {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   object-fit: contain;
 }
 .brand-name {
@@ -798,7 +812,7 @@ button {
   color: #ffffff;
 }
 .brand-tag {
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: 1px;
   color: #febd69;
   font-weight: 700;
@@ -821,7 +835,7 @@ button {
   font-size: 14px;
   outline: none;
 }
-.search-btn {
+.search-wrap button {
   background: #febd69;
   color: #111;
   padding: 0 18px;
@@ -831,19 +845,18 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
 }
-.search-btn:hover {
+.search-wrap button:hover {
   background: #f3a847;
 }
 
-/* Top Nav Action Icons */
+/* Header Navigation Actions */
 .nav-actions {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.nav-item-btn {
+.nav-btn, .icon-btn {
   background: none;
   color: #ffffff;
   padding: 6px 10px;
@@ -854,11 +867,12 @@ button {
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
+  position: relative;
 }
-.nav-item-btn:hover {
+.nav-btn:hover, .icon-btn:hover {
   border-color: #ffffff;
 }
-.badge-count {
+.count {
   background: #f3a847;
   color: #111;
   font-size: 11px;
@@ -866,7 +880,7 @@ button {
   padding: 2px 6px;
   border-radius: 10px;
 }
-.account-badge {
+.account-btn {
   background: #232f3e;
   border: 1px solid #febd69;
   color: #febd69;
@@ -874,15 +888,16 @@ button {
   padding: 6px 14px;
   font-size: 12px;
   font-weight: 700;
+  cursor: pointer;
 }
 
-/* Layout Containers & Banner */
+/* Layout Containers & Hero Banner */
 .container {
   max-width: 1300px;
   margin: auto;
   padding: 20px;
 }
-.hero-banner {
+.hero {
   background: linear-gradient(90deg, #1e293b, #0f172a);
   color: #ffffff;
   border-radius: 8px;
@@ -890,29 +905,45 @@ button {
   margin-bottom: 25px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
-.hero-banner h1 {
+.hero h1 {
   font-size: 32px;
-  margin: 0 0 10px;
+  margin: 10px 0;
 }
-.hero-banner p {
+.hero p {
   color: #cbd5e1;
   font-size: 14px;
-  margin: 0;
+  margin: 0 0 15px;
+}
+.pill {
+  display: inline-block;
+  background: #febd69;
+  color: #111;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
-/* Product Cards (Amazon / Flipkart Style Grid) */
+/* Product Cards Grid */
 .section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 15px;
+}
+.section-title h2 {
   font-size: 20px;
   font-weight: 700;
-  margin: 20px 0 15px;
+  margin: 0;
   color: #111;
 }
-.products-grid {
+.products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
 }
-.product-card {
+.product {
   background: #ffffff;
   border-radius: 6px;
   border: 1px solid #e0e0e0;
@@ -922,21 +953,9 @@ button {
   transition: transform 0.2s, box-shadow 0.2s;
   position: relative;
 }
-.product-card:hover {
+.product:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
-.discount-tag {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #cc0c39;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  padding: 3px 7px;
-  border-radius: 3px;
-  z-index: 2;
 }
 .product-img {
   width: 100%;
@@ -944,19 +963,19 @@ button {
   object-fit: cover;
   background: #f8f8f8;
 }
-.product-info {
+.product-body {
   padding: 14px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
-.product-sub {
+.product-cat {
   font-size: 11px;
   color: #707070;
   text-transform: uppercase;
   font-weight: 700;
 }
-.product-title {
+.product h3 {
   font-size: 14px;
   font-weight: 600;
   color: #212121;
@@ -965,40 +984,36 @@ button {
   height: 36px;
   overflow: hidden;
 }
-.rating-bar {
+.artisan {
+  font-size: 11px;
+  color: #565959;
+  margin-bottom: 4px;
+}
+.stars {
   color: #ffa41c;
   font-size: 12px;
   font-weight: 700;
   margin-bottom: 8px;
 }
-.price-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.curr-price {
+.price {
   font-size: 20px;
   font-weight: 800;
   color: #111;
+  margin-bottom: 10px;
 }
-.orig-price {
+.old {
   font-size: 13px;
   color: #565959;
   text-decoration: line-through;
+  margin-left: 6px;
+  font-weight: 500;
 }
-.delivery-badge {
-  font-size: 11px;
-  color: #007600;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-.card-actions {
+.product-actions {
   display: flex;
   gap: 8px;
   margin-top: auto;
 }
-.btn-primary {
+.add {
   flex: 1;
   background: #ffd814;
   color: #0f1111;
@@ -1006,13 +1021,11 @@ button {
   padding: 8px;
   font-size: 12px;
   font-weight: 700;
-  text-align: center;
-  transition: background 0.2s;
 }
-.btn-primary:hover {
+.add:hover {
   background: #f7ca00;
 }
-.btn-secondary {
+.wish {
   background: #ffa41c;
   color: #0f1111;
   border-radius: 20px;
@@ -1020,29 +1033,29 @@ button {
   font-size: 12px;
   font-weight: 700;
 }
-.btn-secondary:hover {
+.wish:hover {
   background: #fa8900;
 }
 
-/* Seller Portal Tables & Controls */
+/* Seller Operations Portal & Tables */
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   margin-bottom: 20px;
 }
-.stat-card {
+.stat {
   background: #ffffff;
   padding: 18px;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
 }
-.stat-card small {
+.stat small {
   color: #666;
   font-size: 12px;
   display: block;
 }
-.stat-card strong {
+.stat strong {
   font-size: 24px;
   color: #111;
   margin-top: 6px;
@@ -1083,7 +1096,7 @@ button {
 .status-delivered { background: #d4edda; color: #155724; }
 .status-cancelled { background: #f8d7da; color: #721c24; }
 
-/* Modals & Slide-out Cart */
+/* Modals & Cart Drawer */
 .modal {
   position: fixed;
   inset: 0;
@@ -1096,7 +1109,7 @@ button {
 .modal-card {
   background: #ffffff;
   border-radius: 8px;
-  max-width: 650px;
+  max-width: 600px;
   width: 100%;
   padding: 24px;
   position: relative;
@@ -1158,19 +1171,110 @@ button {
   justify-content: space-between;
   align-items: center;
 }
+.cart-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.cart-head button {
+  background: none;
+  color: #fff;
+  font-size: 20px;
+}
 .cart-items {
   padding: 16px;
   flex: 1;
   overflow-y: auto;
+}
+.cart-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 10px;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.cart-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 .cart-footer {
   padding: 16px;
   border-top: 1px solid #e0e0e0;
   background: #f8f9fa;
 }
+.cart-footer > div {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+  font-size: 13px;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 240;
+}
+.primary {
+  background: #ffd814;
+  color: #0f1111;
+  border-radius: 20px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.secondary {
+  background: #ffa41c;
+  color: #0f1111;
+  border-radius: 20px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.full {
+  width: 100%;
+}
+.small-btn {
+  padding: 5px 10px;
+  border-radius: 4px;
+  background: #f5f5f4;
+  font-size: 11px;
+  font-weight: 700;
+}
+.danger {
+  color: #b91c1c;
+}
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 15px 0;
+}
+.tab {
+  padding: 8px 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+}
+.tab.active {
+  background: #131921;
+  color: #fff;
+  border-color: #131921;
+}
+.footer {
+  margin-top: 40px;
+  padding: 25px 20px;
+  background: #131921;
+  color: #febd69;
+  text-align: center;
+  font-size: 13px;
+}
 
 @media(max-width: 768px) {
   .search-wrap { display: none; }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
-  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .products { grid-template-columns: repeat(2, 1fr); }
 }
