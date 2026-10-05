@@ -459,18 +459,44 @@ let products = [
     materials: 'Reclaimed Teak Wood, Brass Accents',
     inStock: 6,
     isSellerItem: false
+  },
+  {
+    id: 'p5',
+    title: 'Handwoven Dhurrie Floor Mat - Terracotta Motif',
+    category: 'Handmade Decor',
+    subCategory: 'Textiles & Rugs',
+    price: 1850,
+    originalPrice: 2200,
+    rating: 4.6,
+    reviewsCount: 15,
+    artisanName: 'Devika Devi',
+    artisanRegion: 'Mirzapur, Uttar Pradesh',
+    image: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&q=80&w=600',
+    description: '100% organic cotton handloom rug woven on pit looms.',
+    materials: 'Organic Raw Cotton, Vegetable Dyes',
+    inStock: 8,
+    isSellerItem: false
   }
+];
+
+const artisans = [
+  { id: 'a1', name: 'Ramesh Kumhar', region: 'Jaipur, Rajasthan', specialty: 'Blue Pottery', experience: '22 Years', status: 'Verified', productsCount: 4, bio: '3rd generation artisan.' },
+  { id: 'a3', name: 'Gurpreet Singh', region: 'Saharanpur, UP', specialty: 'Woodcraft', experience: '18 Years', status: 'Verified', productsCount: 3, bio: 'Teakwood carver.' }
 ];
 
 let state = {
   view: 'shop',
+  category: 'All',
   search: '',
+  sort: 'featured',
+  price: 3000,
   cart: [],
   wishlist: [],
+  adminTab: 'products',
   sellerTab: 'inventory',
   orders: [
-    { id: 'ORD-1001', customer: 'Aarav Sharma', title: 'Hand-Painted Royal Blue Pottery Flower Vase', amount: 1299, qty: 1, status: 'Pending', date: '2026-10-04' },
-    { id: 'ORD-1002', customer: 'Priya Nair', title: 'Carved Teakwood Wall Hanging Jharokha', amount: 2499, qty: 1, status: 'Shipped', date: '2026-10-05' }
+    { id: 'ORD-1001', customer: 'Aarav Sharma', title: 'Hand-Painted Royal Blue Pottery Flower Vase', amount: 1299, items: 1, status: 'Pending', date: '2026-10-04', paymentMethod: 'UPI' },
+    { id: 'ORD-1002', customer: 'Priya Nair', title: 'Carved Teakwood Wall Hanging Jharokha', amount: 2499, items: 1, status: 'Shipped', date: '2026-10-05', paymentMethod: 'Card' }
   ]
 };
 
@@ -481,54 +507,84 @@ try {
   currentUser = null;
 }
 
+const ADMIN_ACCOUNT = { name: 'FolkMade Admin', email: 'admin@folkmade.in', password: 'admin123', role: 'admin' };
+
 const $ = id => document.getElementById(id);
 function money(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
 function toast(msg) { $('toast').textContent = msg; $('toast').classList.remove('hidden'); setTimeout(() =>$('toast').classList.add('hidden'), 2500); }
+function showView(v) { state.view = v; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-/* RENDER BUYER MARKETPLACE */
-function renderShop() {
-  let searchVal = $('searchInput')?.value.toLowerCase() || '';
-  let filtered = products.filter(p => p.title.toLowerCase().includes(searchVal) || p.artisanName.toLowerCase().includes(searchVal));
+function clearSearch() { state.search = ''; $('searchInput').value = ''; renderShop(); }
+function setCategory(c) { state.category = c; renderShop(); }
 
-  $('app').innerHTML = `
-    <div class="container">
-      <section class="hero-banner">
-        <h1>Handcrafted Indian Artisanship</h1>
-        <p>Directly supporting independent local craftsmen and rural artisans across India.</p>
-      </section>
-
-      <div class="section-title">Trending Handicrafts</div>
-      <div class="products-grid">
-        ${filtered.map(p => {
-          let discount = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
-          let wished = state.wishlist.includes(p.id);
-          return `
-            <article class="product-card">
-              <span class="discount-tag">-${discount}% OFF</span>
-              <img class="product-img" src="${p.image}" alt="${p.title}">
-              <div class="product-info">
-                <span class="product-sub">${p.subCategory}</span>
-                <div class="product-title">${p.title}</div>
-                <div class="rating-bar">★ ${p.rating} <span style="color:#707070">(${p.reviewsCount})</span></div>
-                <div class="price-row">
-                  <span class="curr-price">${money(p.price)}</span>
-                  <span class="orig-price">${money(p.originalPrice)}</span>
-                </div>
-                <div class="delivery-badge">✓ FREE Delivery</div>
-                <div class="card-actions">
-                  <button class="btn-primary" onclick="addCart('${p.id}')">Add to Cart</button>
-                  <button class="btn-secondary" onclick="toggleWish('${p.id}')">${wished ? '♥' : '♡'}</button>
-                </div>
-              </div>
-            </article>
-          `;
-        }).join('')}
-      </div>
-    </div>
-  `;
+function filtered() {
+  let arr = products.filter(p =>
+    (state.category === 'All' || p.category === state.category) &&
+    (p.title.toLowerCase().includes(state.search.toLowerCase()) ||
+     p.artisanName.toLowerCase().includes(state.search.toLowerCase()) ||
+     p.artisanRegion.toLowerCase().includes(state.search.toLowerCase())) &&
+    p.price <= state.price
+  );
+  return arr.sort((a, b) =>
+    state.sort === 'price-low' ? a.price - b.price :
+    state.sort === 'price-high' ? b.price - a.price :
+    state.sort === 'rating' ? b.rating - a.rating : 0
+  );
 }
 
-/* RENDER SELLER INTERFACE */
+function productCard(p) {
+  let discount = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+  let wished = state.wishlist.includes(p.id);
+  return `<article class="product">
+<span style="position:absolute;top:10px;left:10px;background:#cc0c39;color:#fff;font-size:11px;font-weight:800;padding:3px 7px;border-radius:3px;">-${discount}% OFF</span>
+<img class="product-img" src="${p.image}" alt="">
+<div class="product-body">
+<div class="product-cat">${p.subCategory}</div>
+<h3>${p.title}</h3>
+<div class="artisan">By ${p.artisanName} · ${p.artisanRegion}</div>
+<div class="stars">★ ${p.rating} <span style="color:#707070">(${p.reviewsCount})</span></div>
+<div class="price">${money(p.price)} <span class="old">${money(p.originalPrice)}</span></div>
+<div style="font-size:11px;color:#007600;font-weight:700;margin-bottom:10px;">✓ FREE Delivery</div>
+<div class="product-actions">
+<button class="add" onclick="addCart('${p.id}')">Add to Cart</button>
+<button class="wish" onclick="toggleWish('${p.id}')">${wished ? '♥' : '♡'}</button>
+</div>
+<button class="small-btn" style="width:100%;margin-top:8px" onclick="openProduct('${p.id}')">View Details</button>
+</div></article>`;
+}
+
+function renderShop() {
+  state.search = $('searchInput')?.value || state.search;
+  let arr = filtered();
+  $('app').innerHTML = `<div class="container">
+<section class="hero">
+<span class="pill">Directly from Rural Craft Hubs</span>
+<h1>Handcrafted Indian Artisanship</h1>
+<p>Discover authentic Jaipur pottery, hand-woven textiles, and handcrafted wooden decor directly from master artisans.</p>
+</section>
+<div class="section-title"><div><h2>Handcrafted Collections</h2></div></div>
+<div class="products">${arr.length ? arr.map(productCard).join('') : `<div class="empty" style="grid-column:1/-1;text-align:center;padding:40px;background:#fff;border-radius:8px;">No products found for these filters.</div>`}</div>
+<div class="footer">FolkMade · Handcrafted Decor & Heritage Art from India</div>
+</div>`;
+}
+
+function renderWishlist() {
+  let arr = products.filter(p => state.wishlist.includes(p.id));
+  $('app').innerHTML = `<div class="container"><div class="section-title"><div><h2>Saved Wishlist</h2></div></div><div class="products">${arr.length ? arr.map(productCard).join('') : `<div class="empty" style="grid-column:1/-1;text-align:center;padding:40px;background:#fff;border-radius:8px;">Your wishlist is empty.</div>`}</div></div>`;
+}
+
+function renderAdmin() {
+  let productRows = products.map(p => `<tr><td>${p.title}</td><td>${p.category}</td><td>${money(p.price)}</td><td>${p.inStock}</td><td><button class="small-btn" onclick="openEdit('${p.id}')">Edit</button> <button class="small-btn danger" onclick="deleteProduct('${p.id}')">Delete</button></td></tr>`).join('');
+  let orderRows = state.orders.map(o => `<tr><td>${o.id}</td><td>${o.customer}</td><td>${money(o.amount)}</td><td>${o.items}</td><td>${o.status}</td><td>${o.date}</td><td>${o.paymentMethod}</td></tr>`).join('');
+  $('app').innerHTML = `<div class="container">
+<div class="section-title"><div><h2>Admin Portal</h2></div><button class="primary" onclick="openAdd()">+ Add Product</button></div>
+<div class="stat-grid"><div class="stat"><small>Products</small><strong>${products.length}</strong></div><div class="stat"><small>Artisans</small><strong>${artisans.length}</strong></div><div class="stat"><small>Orders</small><strong>${state.orders.length}</strong></div><div class="stat"><small>Revenue</small><strong>${money(state.orders.reduce((a, o) => a + o.amount, 0))}</strong></div></div>
+<div class="admin-tabs"><button class="tab ${state.adminTab === 'products' ? 'active' : ''}" onclick="state.adminTab='products';renderAdmin()">Products</button><button class="tab ${state.adminTab === 'orders' ? 'active' : ''}" onclick="state.adminTab='orders';renderAdmin()">Orders</button></div>
+${state.adminTab === 'products' ? `<div class="table-wrap"><table class="table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody>${productRows}</tbody></table></div>` : `<div class="table-wrap"><table class="table"><thead><tr><th>Order</th><th>Customer</th><th>Amount</th><th>Items</th><th>Status</th><th>Date</th><th>Payment</th></tr></thead><tbody>${orderRows}</tbody></table></div>`}
+</div>`;
+}
+
+/* SELLER MANAGEMENT OPERATIONS PORTAL */
 function renderSeller() {
   const sellerName = currentUser ? currentUser.name : 'Seller';
   let sellerProducts = products.filter(p => p.artisanName.toLowerCase() === sellerName.toLowerCase() || p.isSellerItem);
@@ -537,37 +593,37 @@ function renderSeller() {
     <div class="container">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
         <h2>Seller Operations Portal</h2>
-        <button class="btn-secondary" onclick="openAddProductModal()">+ Add New Product</button>
+        <button class="secondary" onclick="openAddProductModal()">+ Add New Product</button>
       </div>
 
       <div class="stat-grid">
-        <div class="stat-card"><small>Total Products Listed</small><strong>${sellerProducts.length}</strong></div>
-        <div class="stat-card"><small>Total Stock Count</small><strong>${sellerProducts.reduce((s,p) => s + p.inStock, 0)} Units</strong></div>
-        <div class="stat-card"><small>Active Customer Orders</small><strong>${state.orders.length}</strong></div>
-        <div class="stat-card"><small>Total Revenue</small><strong>${money(state.orders.reduce((s,o) => s + o.amount, 0))}</strong></div>
+        <div class="stat"><small>Total Products Listed</small><strong>${sellerProducts.length}</strong></div>
+        <div class="stat"><small>Total Stock Count</small><strong>${sellerProducts.reduce((s,p) => s + p.inStock, 0)} Units</strong></div>
+        <div class="stat"><small>Active Customer Orders</small><strong>${state.orders.length}</strong></div>
+        <div class="stat"><small>Total Revenue</small><strong>${money(state.orders.reduce((s,o) => s + o.amount, 0))}</strong></div>
       </div>
 
       <div style="margin-bottom:15px; display:flex; gap:10px;">
-        <button class="btn-primary" style="max-width:160px;" onclick="state.sellerTab='inventory';renderSeller()">Manage Inventory</button>
-        <button class="btn-primary" style="max-width:160px; background:#e7e9ec;" onclick="state.sellerTab='orders';renderSeller()">Orders & Delivery</button>
+        <button class="tab ${state.sellerTab === 'inventory' ? 'active' : ''}" onclick="state.sellerTab='inventory';renderSeller()">Manage Inventory</button>
+        <button class="tab ${state.sellerTab === 'orders' ? 'active' : ''}" onclick="state.sellerTab='orders';renderSeller()">Orders & Delivery</button>
       </div>
 
       ${state.sellerTab === 'inventory' ? `
         <div class="table-wrap">
           <table class="table">
             <thead>
-              <tr><th>Product Title</th><th>Category</th><th>Price (₹)</th><th>Stock</th><th>Quick Actions</th></tr>
+              <tr><th>Product Title</th><th>Category</th><th>Price (₹)</th><th>Stock Level</th><th>Quick Actions</th></tr>
             </thead>
             <tbody>
               ${sellerProducts.map(p => `
                 <tr>
                   <td><b>${p.title}</b></td>
                   <td>${p.subCategory}</td>
-                  <td><input type="number" value="${p.price}" style="width:90px;" onchange="updatePrice('${p.id}', this.value)"></td>
-                  <td><input type="number" value="${p.inStock}" style="width:70px;" onchange="updateStock('${p.id}', this.value)"></td>
+                  <td><input type="number" value="${p.price}" style="width:90px;padding:4px;" onchange="updatePrice('${p.id}', this.value)"></td>
+                  <td><input type="number" value="${p.inStock}" style="width:70px;padding:4px;" onchange="updateStock('${p.id}', this.value)"></td>
                   <td>
-                    <button class="btn-primary" style="padding:4px 10px;" onclick="openEditProductModal('${p.id}')">Edit</button>
-                    <button class="btn-secondary" style="padding:4px 10px; background:#cc0c39; color:#fff;" onclick="deleteProduct('${p.id}')">Delete</button>
+                    <button class="small-btn" onclick="openEditProductModal('${p.id}')">Edit</button>
+                    <button class="small-btn danger" onclick="deleteProduct('${p.id}')">Delete</button>
                   </td>
                 </tr>
               `).join('')}
@@ -607,7 +663,6 @@ function renderSeller() {
   `;
 }
 
-/* SELLER ACTIONS */
 function updatePrice(id, newPrice) {
   let p = products.find(x => x.id === id);
   if (p) { p.price = Number(newPrice); toast('Price updated successfully!'); }
@@ -627,7 +682,7 @@ function openAddProductModal() { showProductForm(null); }
 function openEditProductModal(id) { showProductForm(products.find(p => p.id === id)); }
 
 function showProductForm(p) {
-  p = p || { id: '', title: '', subCategory: 'Pottery & Ceramics', price: '', originalPrice: '', inStock: 10, image: '', description: '', materials: '' };
+  p = p || { id: '', title: '', subCategory: 'Pottery & Ceramics', price: '', originalPrice: '', inStock: 10, image: '', description: '' };
   $('modalContent').innerHTML = `
     <h3>${p.id ? 'Edit Product' : 'Add New Product'}</h3>
     <form onsubmit="saveProduct(event, '${p.id}')">
@@ -640,7 +695,7 @@ function showProductForm(p) {
         <div class="field full-field"><label>Image URL</label><input id="f-img" value="${p.image}"></div>
         <div class="field full-field"><label>Description</label><textarea id="f-desc">${p.description}</textarea></div>
       </div>
-      <button class="btn-primary" type="submit" style="width:100%; margin-top:15px;">Save Listing</button>
+      <button class="primary full" type="submit" style="margin-top:15px;">Save Listing</button>
     </form>
   `;
   $('modal').classList.remove('hidden');
@@ -682,57 +737,32 @@ function deleteProduct(id) {
   if (confirm('Delete this product listing?')) {
     products = products.filter(p => p.id !== id);
     toast('Product deleted.');
-    renderSeller();
+    if (currentUser && currentUser.role === 'seller') renderSeller();
+    else if (currentUser && currentUser.role === 'admin') renderAdmin();
   }
 }
 
-/* ROUTING & AUTHENTICATION */
-function renderAccountButton() {
-  const btn = $('accountBtn');
-  if (currentUser) {
-    btn.textContent = `👤 ${currentUser.name} (${currentUser.role.toUpperCase()}) | Logout`;
-    btn.onclick = () => { currentUser = null; localStorage.removeItem('folkmade_current_user'); state.view = 'shop'; render(); };
-  } else {
-    btn.textContent = '👤 Login / Register';
-    btn.onclick = openAuthModal;
-  }
+/* ACCOUNT AUTHENTICATION & MODAL */
+function getRegisteredUsers() {
+  try { return JSON.parse(localStorage.getItem('folkmade_users') || '[]'); } catch (e) { return []; }
 }
 
-function openAuthModal() {
+function openAuth() { showLoginForm(); $('authModal').classList.remove('hidden'); }
+function closeAuth(e) { if (!e || e.target.id === 'authModal') $('authModal').classList.add('hidden'); }
+
+function showLoginForm(message = '') {
   $('authContent').innerHTML = `
-    <h3>Account Access</h3>
-    <form onsubmit="handleLogin(event)">
-      <div class="field"><label>Login Role</label>
-        <select id="l-role"><option value="user">Buyer</option><option value="seller">Artisan Seller</option></select>
-      </div>
-      <div class="field" style="margin-top:10px;"><label>Email</label><input id="l-email" type="email" required></div>
-      <div class="field" style="margin-top:10px;"><label>Password</label><input id="l-pass" type="password" required></div>
-      <button class="btn-primary" type="submit" style="width:100%; margin-top:15px;">Login</button>
+    <h2>Welcome to FolkMade</h2>
+    ${message ? `<div style="background:#d4edda;color:#155724;padding:8px;margin-bottom:10px;border-radius:4px;">${message}</div>` : ''}
+    <form onsubmit="loginAccount(event)">
+      <div class="field"><label>Login as</label><select id="login-role" required><option value="user">Buyer</option><option value="seller">Seller</option><option value="admin">Admin</option></select></div>
+      <div class="field" style="margin-top:10px;"><label>Email</label><input id="login-email" type="email" required></div>
+      <div class="field" style="margin-top:10px;"><label>Password</label><input id="login-password" type="password" required></div>
+      <div id="login-error"></div>
+      <button class="primary full" type="submit" style="margin-top:15px;">Login</button>
     </form>
+    <p style="font-size:12px;margin-top:12px;">New user? <button type="button" style="background:none;color:#b45309;font-weight:700;" onclick="showRegisterForm()">Create account</button></p>
   `;
-  $('modal').classList.remove('hidden');
 }
 
-function handleLogin(e) {
-  e.preventDefault();
-  currentUser = { name: $('l-email').value.split('@')[0], role:$('l-role').value };
-  localStorage.setItem('folkmade_current_user', JSON.stringify(currentUser));
-  $('modal').classList.add('hidden');
-  state.view = currentUser.role === 'seller' ? 'seller' : 'shop';
-  render();
-}
-
-function render() {
-  renderAccountButton();
-  if (state.view === 'seller' && (!currentUser || currentUser.role !== 'seller')) state.view = 'shop';
-  $('wishCount').textContent = state.wishlist.length;
-  $('cartCount').textContent = state.cart.length;
-
-  if (state.view === 'seller') renderSeller();
-  else renderShop();
-}
-
-function addCart(id) { state.cart.push(id); toast('Added to Shopping Bag'); render(); }
-function toggleWish(id) { state.wishlist.push(id); toast('Saved to Wishlist'); render(); }
-
-render();
+function
