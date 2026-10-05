@@ -511,25 +511,28 @@ const ADMIN_ACCOUNT = { name: 'FolkMade Admin', email: 'admin@folkmade.in', pass
 
 const $ = id => document.getElementById(id);
 function money(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
-function toast(msg) { $('toast').textContent = msg; $('toast').classList.remove('hidden'); setTimeout(() =>$('toast').classList.add('hidden'), 2500); }
-function showView(v) { state.view = v; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function toast(msg) { 
+  let t = $('toast');
+  if(!t) return;
+  t.textContent = msg; 
+  t.classList.remove('hidden'); 
+  setTimeout(() => t.classList.add('hidden'), 2500); 
+}
 
-function clearSearch() { state.search = ''; $('searchInput').value = ''; renderShop(); }
-function setCategory(c) { state.category = c; renderShop(); }
+function showView(v) { 
+  state.view = v; 
+  render(); 
+  window.scrollTo({ top: 0, behavior: 'smooth' }); 
+}
 
 function filtered() {
+  let searchVal = ($('searchInput')?.value || state.search || '').toLowerCase();
   let arr = products.filter(p =>
-    (state.category === 'All' || p.category === state.category) &&
-    (p.title.toLowerCase().includes(state.search.toLowerCase()) ||
-     p.artisanName.toLowerCase().includes(state.search.toLowerCase()) ||
-     p.artisanRegion.toLowerCase().includes(state.search.toLowerCase())) &&
-    p.price <= state.price
+    (p.title.toLowerCase().includes(searchVal) ||
+     p.artisanName.toLowerCase().includes(searchVal) ||
+     p.subCategory.toLowerCase().includes(searchVal))
   );
-  return arr.sort((a, b) =>
-    state.sort === 'price-low' ? a.price - b.price :
-    state.sort === 'price-high' ? b.price - a.price :
-    state.sort === 'rating' ? b.rating - a.rating : 0
-  );
+  return arr;
 }
 
 function productCard(p) {
@@ -554,7 +557,6 @@ function productCard(p) {
 }
 
 function renderShop() {
-  state.search = $('searchInput')?.value || state.search;
   let arr = filtered();
   $('app').innerHTML = `<div class="container">
 <section class="hero">
@@ -563,28 +565,28 @@ function renderShop() {
 <p>Discover authentic Jaipur pottery, hand-woven textiles, and handcrafted wooden decor directly from master artisans.</p>
 </section>
 <div class="section-title"><div><h2>Handcrafted Collections</h2></div></div>
-<div class="products">${arr.length ? arr.map(productCard).join('') : `<div class="empty" style="grid-column:1/-1;text-align:center;padding:40px;background:#fff;border-radius:8px;">No products found for these filters.</div>`}</div>
+<div class="products">${arr.length ? arr.map(productCard).join('') : `<div style="grid-column:1/-1;text-align:center;padding:40px;background:#fff;border-radius:8px;">No products found for these filters.</div>`}</div>
 <div class="footer">FolkMade · Handcrafted Decor & Heritage Art from India</div>
 </div>`;
 }
 
 function renderWishlist() {
   let arr = products.filter(p => state.wishlist.includes(p.id));
-  $('app').innerHTML = `<div class="container"><div class="section-title"><div><h2>Saved Wishlist</h2></div></div><div class="products">${arr.length ? arr.map(productCard).join('') : `<div class="empty" style="grid-column:1/-1;text-align:center;padding:40px;background:#fff;border-radius:8px;">Your wishlist is empty.</div>`}</div></div>`;
+  $('app').innerHTML = `<div class="container"><div class="section-title"><div><h2>Saved Wishlist</h2></div></div><div class="products">${arr.length ? arr.map(productCard).join('') : `<div style="grid-column:1/-1;text-align:center;padding:40px;background:#fff;border-radius:8px;">Your wishlist is empty.</div>`}</div></div>`;
 }
 
 function renderAdmin() {
-  let productRows = products.map(p => `<tr><td>${p.title}</td><td>${p.category}</td><td>${money(p.price)}</td><td>${p.inStock}</td><td><button class="small-btn" onclick="openEdit('${p.id}')">Edit</button> <button class="small-btn danger" onclick="deleteProduct('${p.id}')">Delete</button></td></tr>`).join('');
+  let productRows = products.map(p => `<tr><td>${p.title}</td><td>${p.category}</td><td>${money(p.price)}</td><td>${p.inStock}</td><td><button class="small-btn" onclick="openEditProductModal('${p.id}')">Edit</button> <button class="small-btn danger" onclick="deleteProduct('${p.id}')">Delete</button></td></tr>`).join('');
   let orderRows = state.orders.map(o => `<tr><td>${o.id}</td><td>${o.customer}</td><td>${money(o.amount)}</td><td>${o.items}</td><td>${o.status}</td><td>${o.date}</td><td>${o.paymentMethod}</td></tr>`).join('');
   $('app').innerHTML = `<div class="container">
-<div class="section-title"><div><h2>Admin Portal</h2></div><button class="primary" onclick="openAdd()">+ Add Product</button></div>
+<div class="section-title"><div><h2>Admin Portal</h2></div><button class="primary" onclick="openAddProductModal()">+ Add Product</button></div>
 <div class="stat-grid"><div class="stat"><small>Products</small><strong>${products.length}</strong></div><div class="stat"><small>Artisans</small><strong>${artisans.length}</strong></div><div class="stat"><small>Orders</small><strong>${state.orders.length}</strong></div><div class="stat"><small>Revenue</small><strong>${money(state.orders.reduce((a, o) => a + o.amount, 0))}</strong></div></div>
 <div class="admin-tabs"><button class="tab ${state.adminTab === 'products' ? 'active' : ''}" onclick="state.adminTab='products';renderAdmin()">Products</button><button class="tab ${state.adminTab === 'orders' ? 'active' : ''}" onclick="state.adminTab='orders';renderAdmin()">Orders</button></div>
 ${state.adminTab === 'products' ? `<div class="table-wrap"><table class="table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody>${productRows}</tbody></table></div>` : `<div class="table-wrap"><table class="table"><thead><tr><th>Order</th><th>Customer</th><th>Amount</th><th>Items</th><th>Status</th><th>Date</th><th>Payment</th></tr></thead><tbody>${orderRows}</tbody></table></div>`}
 </div>`;
 }
 
-/* SELLER MANAGEMENT OPERATIONS PORTAL */
+/* SELLER OPERATIONS PORTAL */
 function renderSeller() {
   const sellerName = currentUser ? currentUser.name : 'Seller';
   let sellerProducts = products.filter(p => p.artisanName.toLowerCase() === sellerName.toLowerCase() || p.isSellerItem);
@@ -730,7 +732,8 @@ function saveProduct(e, id) {
     toast('New product published!');
   }
   $('modal').classList.add('hidden');
-  renderSeller();
+  if (currentUser && currentUser.role === 'seller') renderSeller();
+  else render();
 }
 
 function deleteProduct(id) {
@@ -739,16 +742,27 @@ function deleteProduct(id) {
     toast('Product deleted.');
     if (currentUser && currentUser.role === 'seller') renderSeller();
     else if (currentUser && currentUser.role === 'admin') renderAdmin();
+    else renderShop();
   }
 }
 
-/* ACCOUNT AUTHENTICATION & MODAL */
+/* ACCOUNT AUTHENTICATION & DIALOG MODAL HANDLERS */
 function getRegisteredUsers() {
   try { return JSON.parse(localStorage.getItem('folkmade_users') || '[]'); } catch (e) { return []; }
 }
 
-function openAuth() { showLoginForm(); $('authModal').classList.remove('hidden'); }
-function closeAuth(e) { if (!e || e.target.id === 'authModal') $('authModal').classList.add('hidden'); }
+function openAuth() { 
+  showLoginForm(); 
+  let m = $('authModal');
+  if(m) m.classList.remove('hidden'); 
+}
+
+function closeAuth(e) { 
+  if (!e || e.target.id === 'authModal' || e.target.classList.contains('modal-close')) {
+    let m = $('authModal');
+    if(m) m.classList.add('hidden'); 
+  }
+}
 
 function showLoginForm(message = '') {
   $('authContent').innerHTML = `
@@ -756,13 +770,176 @@ function showLoginForm(message = '') {
     ${message ? `<div style="background:#d4edda;color:#155724;padding:8px;margin-bottom:10px;border-radius:4px;">${message}</div>` : ''}
     <form onsubmit="loginAccount(event)">
       <div class="field"><label>Login as</label><select id="login-role" required><option value="user">Buyer</option><option value="seller">Seller</option><option value="admin">Admin</option></select></div>
-      <div class="field" style="margin-top:10px;"><label>Email</label><input id="login-email" type="email" required></div>
+      <div class="field" style="margin-top:10px;"><label>Email</label><input id="login-email" type="email" placeholder="seller@folkmade.in" required></div>
       <div class="field" style="margin-top:10px;"><label>Password</label><input id="login-password" type="password" required></div>
       <div id="login-error"></div>
       <button class="primary full" type="submit" style="margin-top:15px;">Login</button>
     </form>
-    <p style="font-size:12px;margin-top:12px;">New user? <button type="button" style="background:none;color:#b45309;font-weight:700;" onclick="showRegisterForm()">Create account</button></p>
+    <p style="font-size:12px;margin-top:12px;">New user? <button type="button" style="background:none;color:#b45309;font-weight:700;border:0;cursor:pointer;" onclick="showRegisterForm()">Create account</button></p>
   `;
 }
 
-function
+function showRegisterForm() {
+  $('authContent').innerHTML = `
+    <h2>Create FolkMade Account</h2>
+    <form onsubmit="registerAccount(event)">
+      <div class="field"><label>Register as</label><select id="reg-role" required><option value="user">Buyer</option><option value="seller">Seller</option></select></div>
+      <div class="field" style="margin-top:10px;"><label>Full Name</label><input id="reg-name" required></div>
+      <div class="field" style="margin-top:10px;"><label>Email</label><input id="reg-email" type="email" required></div>
+      <div class="field" style="margin-top:10px;"><label>Phone</label><input id="reg-phone" type="tel" required></div>
+      <div class="field" style="margin-top:10px;"><label>Password</label><input id="reg-password" type="password" required></div>
+      <div class="field" style="margin-top:10px;"><label>Confirm Password</label><input id="reg-confirm" type="password" required></div>
+      <div id="register-error"></div>
+      <button class="primary full" type="submit" style="margin-top:15px;">Create Account</button>
+    </form>
+  `;
+}
+
+function loginAccount(e) {
+  e.preventDefault();
+  const role = $('login-role').value;
+  const email = $('login-email').value.trim().toLowerCase();
+  const password = $('login-password').value;
+  let account = null;
+
+  if (role === 'admin') {
+    if (email === ADMIN_ACCOUNT.email && password === ADMIN_ACCOUNT.password) account = { ...ADMIN_ACCOUNT };
+  } else {
+    account = getRegisteredUsers().find(u => u.email === email && u.password === password && u.role === role);
+  }
+
+  if (!account) {
+    $('login-error').innerHTML = '<div style="color:red;font-size:12px;margin-top:8px;">Invalid email, password, or role choice.</div>';
+    return;
+  }
+
+  currentUser = { name: account.name, email: account.email, role: account.role };
+  localStorage.setItem('folkmade_current_user', JSON.stringify(currentUser));
+  $('authModal').classList.add('hidden');
+
+  if (currentUser.role === 'admin') state.view = 'admin';
+  else if (currentUser.role === 'seller') state.view = 'seller';
+  else state.view = 'shop';
+  
+  toast(`Logged in as ${currentUser.name}`);
+  render();
+}
+
+function registerAccount(e) {
+  e.preventDefault();
+  const role = $('reg-role').value;
+  const name = $('reg-name').value.trim();
+  const email = $('reg-email').value.trim().toLowerCase();
+  const phone = $('reg-phone').value.trim();
+  const password = $('reg-password').value;
+  const confirm = $('reg-confirm').value;
+
+  if (password !== confirm) { $('register-error').innerHTML = '<div style="color:red;font-size:12px;">Passwords do not match.</div>'; return; }
+
+  let users = getRegisteredUsers();
+  users.push({ name, email, phone, password, role });
+  localStorage.setItem('folkmade_users', JSON.stringify(users));
+
+  showLoginForm('Account created successfully. Please login now.');
+}
+
+function logoutAccount() {
+  currentUser = null;
+  localStorage.removeItem('folkmade_current_user');
+  state.view = 'shop';
+  render();
+  toast('Logged out successfully.');
+}
+
+function renderAccountButton() {
+  const btn = $('accountBtn');
+  if (!btn) return;
+  if (currentUser) {
+    btn.textContent = `👤 ${currentUser.name} (${currentUser.role.toUpperCase()}) | Logout`;
+    btn.onclick = logoutAccount;
+  } else {
+    btn.textContent = '👤 Login / Register';
+    btn.onclick = openAuth;
+  }
+}
+
+/* CART & DRAWER CONTROLS */
+function toggleWish(id) { 
+  if (state.wishlist.includes(id)) {
+    state.wishlist = state.wishlist.filter(x => x !== id);
+    toast('Removed from Wishlist');
+  } else {
+    state.wishlist.push(id);
+    toast('Added to Wishlist!');
+  }
+  render(); 
+}
+
+function addCart(id) { 
+  let p = products.find(x => x.id === id), x = state.cart.find(x => x.id === id); 
+  if (x) x.qty++; 
+  else state.cart.push({ id, qty: 1 }); 
+  toast(`Added "${p.title}" to cart!`); 
+  render(); 
+}
+
+function changeQty(id, d) { 
+  let x = state.cart.find(x => x.id === id); 
+  if (x) { 
+    x.qty += d; 
+    if (x.qty <= 0) state.cart = state.cart.filter(y => y.id !== id); 
+  } 
+  updateCart(); 
+}
+
+function removeCart(id) { 
+  state.cart = state.cart.filter(x => x.id !== id); 
+  updateCart(); 
+}
+
+function openCart() { 
+  updateCart(); 
+  $('overlay').classList.remove('hidden');$('cartPanel').classList.add('open'); 
+}
+
+function closeCart() { 
+  $('overlay').classList.add('hidden');$('cartPanel').classList.remove('open'); 
+}
+
+function updateCart() {
+  let subtotal = state.cart.reduce((s, x) => { let p = products.find(p => p.id === x.id); return s + (p ? p.price * x.qty : 0); }, 0);
+  $('cartSubtotal').textContent = money(subtotal);
+  $('grandTotal').textContent = money(subtotal);$('cartItems').innerHTML = state.cart.length ? state.cart.map(x => { let p = products.find(p => p.id === x.id); return `<div class="cart-item"><img src="${p.image}"><div><h4>${p.title}</h4><small>${money(p.price)}</small><div style="margin-top:5px;"><button onclick="changeQty('${p.id}',-1)">−</button> <b>${x.qty}</b> <button onclick="changeQty('${p.id}',1)">+</button></div></div><button class="small-btn danger" onclick="removeCart('${p.id}')">×</button></div>`; }).join('') : `<div style="text-align:center;padding:20px;">Shopping bag is empty.</div>`;
+  render();
+}
+
+function checkout() { 
+  if (!state.cart.length) return toast('Your cart is empty'); 
+  alert('Order placed successfully!'); 
+  state.cart = []; 
+  closeCart(); 
+  toast('Order placed!'); 
+}
+
+function openProduct(id) { 
+  let p = products.find(x => x.id === id); 
+  $('modalContent').innerHTML = `<div><img src="${p.image}" style="width:100%;height:250px;object-fit:cover;border-radius:6px;"><h2>${p.title}</h2><p>${p.description}</p><h3>${money(p.price)}</h3><button class="primary full" onclick="addCart('${p.id}');$('modal').classList.add('hidden');">Add to Cart</button></div>`; 
+  $('modal').classList.remove('hidden'); 
+}
+
+function render() {
+  renderAccountButton();
+  if (state.view === 'seller' && (!currentUser || currentUser.role !== 'seller')) state.view = 'shop';
+  if (state.view === 'admin' && (!currentUser || currentUser.role !== 'admin')) state.view = 'shop';
+
+  if ($('wishCount'))$('wishCount').textContent = state.wishlist.length || '0';
+  if ($('cartCount'))$('cartCount').textContent = state.cart.reduce((a, c) => a + c.qty, 0) || '0';
+
+  if (state.view === 'seller') renderSeller();
+  else if (state.view === 'admin') renderAdmin();
+  else if (state.view === 'wishlist') renderWishlist();
+  else renderShop();
+}
+
+$('searchInput')?.addEventListener('input', () => { state.search =$('searchInput').value; renderShop(); });
+render();
