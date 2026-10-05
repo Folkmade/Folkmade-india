@@ -1,4 +1,4 @@
-* {
+/* {
   box-sizing:border-box
 }
 html {
@@ -728,4 +728,449 @@ button {
     align-items:start;
     flex-direction:column
   }
+}
+*/
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: #f1f3f6;
+  color: #212121;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.hidden {
+  display: none !important;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+}
+
+/* Amazon / Flipkart Style Navigation Header */
+.top-strip {
+  background: #232f3e;
+  color: #febd69;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 15px;
+  text-align: center;
+}
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #131921;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.header-inner {
+  max-width: 1300px;
+  margin: auto;
+  min-height: 65px;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+}
+.brand-mark img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.brand-name {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+.brand-tag {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #febd69;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Integrated Search Bar */
+.search-wrap {
+  position: relative;
+  flex: 1;
+  max-width: 620px;
+  display: flex;
+}
+.search-wrap input {
+  width: 100%;
+  background: #ffffff;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  padding: 10px 15px;
+  font-size: 14px;
+  outline: none;
+}
+.search-btn {
+  background: #febd69;
+  color: #111;
+  padding: 0 18px;
+  border-radius: 0 4px 4px 0;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.search-btn:hover {
+  background: #f3a847;
+}
+
+/* Top Nav Action Icons */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-item-btn {
+  background: none;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.nav-item-btn:hover {
+  border-color: #ffffff;
+}
+.badge-count {
+  background: #f3a847;
+  color: #111;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+.account-badge {
+  background: #232f3e;
+  border: 1px solid #febd69;
+  color: #febd69;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Layout Containers & Banner */
+.container {
+  max-width: 1300px;
+  margin: auto;
+  padding: 20px;
+}
+.hero-banner {
+  background: linear-gradient(90deg, #1e293b, #0f172a);
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 35px 40px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.hero-banner h1 {
+  font-size: 32px;
+  margin: 0 0 10px;
+}
+.hero-banner p {
+  color: #cbd5e1;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Product Cards (Amazon / Flipkart Style Grid) */
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 20px 0 15px;
+  color: #111;
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.product-card {
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+.discount-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #cc0c39;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 3px;
+  z-index: 2;
+}
+.product-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  background: #f8f8f8;
+}
+.product-info {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.product-sub {
+  font-size: 11px;
+  color: #707070;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.product-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #212121;
+  margin: 6px 0;
+  line-height: 1.3;
+  height: 36px;
+  overflow: hidden;
+}
+.rating-bar {
+  color: #ffa41c;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.curr-price {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111;
+}
+.orig-price {
+  font-size: 13px;
+  color: #565959;
+  text-decoration: line-through;
+}
+.delivery-badge {
+  font-size: 11px;
+  color: #007600;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+.btn-primary {
+  flex: 1;
+  background: #ffd814;
+  color: #0f1111;
+  border-radius: 20px;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: #f7ca00;
+}
+.btn-secondary {
+  background: #ffa41c;
+  color: #0f1111;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.btn-secondary:hover {
+  background: #fa8900;
+}
+
+/* Seller Portal Tables & Controls */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+.stat-card small {
+  color: #666;
+  font-size: 12px;
+  display: block;
+}
+.stat-card strong {
+  font-size: 24px;
+  color: #111;
+  margin-top: 6px;
+  display: block;
+}
+.table-wrap {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  overflow: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+.table th, .table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+}
+.table th {
+  background: #f8f9fa;
+  font-weight: 700;
+  color: #333;
+}
+.status-pill {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-block;
+}
+.status-pending { background: #fff3cd; color: #856404; }
+.status-processing { background: #cce5ff; color: #004085; }
+.status-shipped { background: #d1ecf1; color: #0c5460; }
+.status-delivered { background: #d4edda; color: #155724; }
+.status-cancelled { background: #f8d7da; color: #721c24; }
+
+/* Modals & Slide-out Cart */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.modal-card {
+  background: #ffffff;
+  border-radius: 8px;
+  max-width: 650px;
+  width: 100%;
+  padding: 24px;
+  position: relative;
+  max-height: 90vh;
+  overflow: auto;
+}
+.modal-close {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background: none;
+  font-size: 22px;
+  color: #666;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.full-field {
+  grid-column: 1 / -1;
+}
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 9px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+}
+.cart-panel {
+  position: fixed;
+  right: -420px;
+  top: 0;
+  width: 400px;
+  max-width: 90%;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 250;
+  box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+  transition: right 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+.cart-panel.open {
+  right: 0;
+}
+.cart-head {
+  padding: 16px;
+  background: #131921;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cart-items {
+  padding: 16px;
+  flex: 1;
+  overflow-y: auto;
+}
+.cart-footer {
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+@media(max-width: 768px) {
+  .search-wrap { display: none; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
 }
