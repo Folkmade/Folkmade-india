@@ -55,16 +55,439 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FolkMade — Online Shopping for Handcrafted Traditions</title>
-<link rel="stylesheet" href="style.css">
+<style>
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: #f1f3f6;
+  color: #212121;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+.hidden {
+  display: none !important;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+}
+
+/* Amazon / Flipkart Style Top Header */
+.top-strip {
+  background: #232f3e;
+  color: #febd69;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 15px;
+  text-align: center;
+}
+.toast-bar {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #131921;
+  color: #febd69;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 300;
+}
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #131921;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.header-inner {
+  max-width: 1300px;
+  margin: auto;
+  min-height: 65px;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #fff;
+}
+.brand-mark img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+.brand-name {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+.brand-tag {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #febd69;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Integrated Search Bar */
+.search-wrap {
+  position: relative;
+  flex: 1;
+  max-width: 620px;
+  display: flex;
+}
+.search-wrap input {
+  width: 100%;
+  background: #ffffff;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  padding: 10px 15px;
+  font-size: 14px;
+  outline: none;
+}
+.search-btn {
+  background: #febd69;
+  color: #111;
+  padding: 0 18px;
+  border-radius: 0 4px 4px 0;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-btn:hover {
+  background: #f3a847;
+}
+
+/* Header Navigation Actions */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-item-btn {
+  background: none;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.nav-item-btn:hover {
+  border-color: #ffffff;
+}
+.badge-count {
+  background: #f3a847;
+  color: #111;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+.account-badge {
+  background: #232f3e;
+  border: 1px solid #febd69;
+  color: #febd69;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Layout & Banners */
+.container {
+  max-width: 1300px;
+  margin: auto;
+  padding: 20px;
+}
+.hero-banner {
+  background: linear-gradient(90deg, #1e293b, #0f172a);
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 35px 40px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.hero-banner h1 {
+  font-size: 32px;
+  margin: 0 0 10px;
+}
+.hero-banner p {
+  color: #cbd5e1;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Product Cards Grid */
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 20px 0 15px;
+  color: #111;
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.product-card {
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+.discount-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #cc0c39;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 3px;
+  z-index: 2;
+}
+.product-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  background: #f8f8f8;
+}
+.product-info {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.product-sub {
+  font-size: 11px;
+  color: #707070;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.product-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #212121;
+  margin: 6px 0;
+  line-height: 1.3;
+  height: 36px;
+  overflow: hidden;
+}
+.rating-bar {
+  color: #ffa41c;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.curr-price {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111;
+}
+.orig-price {
+  font-size: 13px;
+  color: #565959;
+  text-decoration: line-through;
+}
+.delivery-badge {
+  font-size: 11px;
+  color: #007600;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+.btn-primary {
+  flex: 1;
+  background: #ffd814;
+  color: #0f1111;
+  border-radius: 20px;
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: #f7ca00;
+}
+.btn-secondary {
+  background: #ffa41c;
+  color: #0f1111;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.btn-secondary:hover {
+  background: #fa8900;
+}
+
+/* Seller Operations Portal */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+.stat-card small {
+  color: #666;
+  font-size: 12px;
+  display: block;
+}
+.stat-card strong {
+  font-size: 24px;
+  color: #111;
+  margin-top: 6px;
+  display: block;
+}
+.table-wrap {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  overflow: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+.table th, .table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+}
+.table th {
+  background: #f8f9fa;
+  font-weight: 700;
+  color: #333;
+}
+.status-pill {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-block;
+}
+.status-pending { background: #fff3cd; color: #856404; }
+.status-processing { background: #cce5ff; color: #004085; }
+.status-shipped { background: #d1ecf1; color: #0c5460; }
+.status-delivered { background: #d4edda; color: #155724; }
+.status-cancelled { background: #f8d7da; color: #721c24; }
+
+/* Modals */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.modal-card {
+  background: #ffffff;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+  padding: 24px;
+  position: relative;
+  max-height: 90vh;
+  overflow: auto;
+}
+.modal-close {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background: none;
+  font-size: 22px;
+  color: #666;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.full-field {
+  grid-column: 1 / -1;
+}
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 9px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+}
+
+@media(max-width: 768px) {
+  .search-wrap { display: none; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
 </head>
 <body>
 
-<div id="toast" class="top-strip hidden">Notification Message</div>
+<div class="top-strip">🛍️ Empowering 500+ Rural Artisans & Craft Creators across India. Free shipping on orders over ₹999!</div>
+<div id="toast" class="toast-bar hidden">Notification Message</div>
 
 <header class="header">
   <div class="header-inner">
     <div class="brand" onclick="state.view='shop';render();">
-      <div class="brand-mark"><img src="https://github.com/Folkmade/Folkmade-india/blob/b36ea9a33878b0346fcb70eea7df545f2355e8cb/IMG-20260904-WA0022.jpg" alt="FolkMade Logo"></div>
+      <div class="brand-mark"><img src="https://github.com/Folkmade/Folkmade-india/blob/5bc0577318ebf109eb871e218d84d7c98be5719e/README.md" alt="FolkMade Logo"></div>
       <div>
         <div class="brand-name">FolkMade</div>
         <div class="brand-tag">Handcrafted Traditions</div>
@@ -87,15 +510,7 @@
 
 <main id="app"></main>
 
-<!-- Unified Modal Container -->
+<!-- Modal Container -->
 <div id="modal" class="modal hidden">
   <div class="modal-card">
-    <button class="modal-close" onclick="$('modal').classList.add('hidden')">×</button>
-    <div id="modalContent"></div>
-  </div>
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
-
+    <button class="
