@@ -59,16 +59,16 @@
 </head>
 <body>
 
-<!-- Announcement Strip & Notification Toast -->
+<!-- Announcement Strip & Notification Banner -->
 <div class="top-strip">🛍️ Empowering 500+ Rural Artisans & Craft Creators across India. Free shipping on orders over ₹999!</div>
 <div id="toast" class="toast hidden">Notification</div>
 
-<!-- Main Header -->
+<!-- Main Top Header -->
 <header class="header">
   <div class="header-inner">
-    <div class="brand" onclick="showView('shop')">
+    <div class="brand" id="brandBtn">
       <div class="brand-mark">
-        <span style="font-size: 24px;">🏺</span>
+        <span style="font-size:24px;">🏺</span>
       </div>
       <div>
         <div class="brand-name">FolkMade</div>
@@ -77,49 +77,49 @@
     </div>
 
     <div class="search-wrap">
-      <input id="searchInput" placeholder="Search for hand pottery, wooden decor, artifacts..." oninput="renderShop()">
-      <button class="search-btn" type="button" onclick="renderShop()">🔍</button>
+      <input id="searchInput" placeholder="Search for hand pottery, wooden decor, artifacts...">
+      <button class="search-btn" id="searchBtn" type="button">🔍</button>
     </div>
 
     <nav class="nav-actions">
-      <button class="nav-btn" type="button" onclick="showView('shop')">Store</button>
-      <button class="icon-btn" type="button" onclick="showView('wishlist')">♡ Wishlist <span id="wishCount" class="count">0</span></button>
-      <button class="icon-btn" type="button" onclick="openCart()">🛍 Bag <span id="cartCount" class="count">0</span></button>
-      <button id="accountBtn" class="account-btn" type="button" onclick="openAuth()">👤 Login / Register</button>
+      <button class="nav-btn" id="storeNavBtn" type="button">Store</button>
+      <button class="icon-btn" id="wishlistNavBtn" type="button">♡ Wishlist <span id="wishCount" class="count">0</span></button>
+      <button class="icon-btn" id="cartNavBtn" type="button">🛍 Bag <span id="cartCount" class="count">0</span></button>
+      <button id="accountBtn" class="account-btn" type="button">👤 Login / Register</button>
     </nav>
   </div>
 </header>
 
-<!-- Main Render Container -->
+<!-- Dynamic View Render Area -->
 <main id="app"></main>
 
-<!-- Slide-Out Shopping Bag Drawer -->
-<div id="overlay" class="overlay hidden" onclick="closeCart()"></div>
+<!-- Slide-Out Shopping Bag Panel -->
+<div id="overlay" class="overlay hidden"></div>
 <aside id="cartPanel" class="cart-panel">
   <div class="cart-head">
     <h2>Shopping Bag</h2>
-    <button type="button" onclick="closeCart()">×</button>
+    <button type="button" id="closeCartBtn">×</button>
   </div>
   <div id="cartItems" class="cart-items"></div>
   <div class="cart-footer">
     <div><span>Subtotal</span><b id="cartSubtotal">₹0</b></div>
     <div style="font-size:16px; font-weight:800; margin-top:10px;"><span>Total</span><b id="grandTotal">₹0</b></div>
-    <button class="primary full" style="margin-top:12px;" type="button" onclick="checkout()">Checkout</button>
+    <button class="primary full" style="margin-top:12px;" type="button" id="checkoutBtn">Checkout</button>
   </div>
 </aside>
 
-<!-- Modal for Product Details & Seller Inventory Operations -->
+<!-- Modal Dialog Container (Product Details / Add-Edit Form) -->
 <div id="modal" class="modal hidden">
   <div class="modal-card">
-    <button class="modal-close" type="button" onclick="closeModal()">×</button>
+    <button class="modal-close" type="button" id="closeModalBtn">×</button>
     <div id="modalContent"></div>
   </div>
 </div>
 
-<!-- Modal for User & Seller Authentication -->
+<!-- Modal Dialog Container (User / Seller Authentication) -->
 <div id="authModal" class="modal hidden">
   <div class="modal-card">
-    <button class="modal-close" type="button" onclick="closeAuth()">×</button>
+    <button class="modal-close" type="button" id="closeAuthBtn">×</button>
     <div id="authContent"></div>
   </div>
 </div>
