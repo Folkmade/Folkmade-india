@@ -984,6 +984,12 @@ function render() {
   else renderShop();
 }
 
+// Attach Event Listeners Safely After DOM Load
 window.addEventListener('DOMContentLoaded', () => {
+  $('brandBtn')?.addEventListener('click', () => showView('shop'));$('storeNavBtn')?.addEventListener('click', () => showView('shop'));
+  $('wishlistNavBtn')?.addEventListener('click', () => showView('wishlist'));$('cartNavBtn')?.addEventListener('click', openCart);
+  $('closeCartBtn')?.addEventListener('click', closeCart);$('overlay')?.addEventListener('click', closeCart);
+  $('closeModalBtn')?.addEventListener('click', closeModal);$('closeAuthBtn')?.addEventListener('click', closeAuth);
+  
   render();
 });
