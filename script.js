@@ -1,4 +1,4 @@
-/*const products = [
+const products = [
 {id:'p1',title:'Hand-Painted Blue Pottery Flower Vase',category:'Handmade Decor',subCategory:'Pottery & Ceramics',price:1299,originalPrice:1699,rating:4.8,reviewsCount:34,artisanName:'Ramesh Kumhar',artisanRegion:'Jaipur, Rajasthan',image:'https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?auto=format&fit=crop&q=80&w=600',description:'Authentic quartz-sand pottery handcrafted by master craftsmen in Jaipur. Traditional cobalt blue geometric motifs with floral borders.',materials:'Quartz stone powder, glass, natural oxides',inStock:12,isFeatured:true,isBestseller:true},
 {id:'p2',title:'Grandma’s Traditional Mango Avakaya Pickle (500g)',category:'Traditional Edibles',subCategory:'Pickles & Spices',price:349,originalPrice:420,rating:4.9,reviewsCount:88,artisanName:'Saraswathi Amma',artisanRegion:'Guntur, Andhra Pradesh',image:'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&q=80&w=600',description:'Sun-dried raw mangoes marinated in cold-pressed sesame oil, freshly ground mustard, and fragrant Andhra spices. 100% natural and preservative-free.',materials:'Raw Mango, Cold-Pressed Sesame Oil, Ground Spices, Sea Salt',inStock:25,isFeatured:true,isBestseller:true},
 {id:'p3',title:'Carved Teakwood Wall Hanging Jharokha',category:'Handmade Decor',subCategory:'Wood Carvings',price:2499,originalPrice:3100,rating:4.7,reviewsCount:19,artisanName:'Gurpreet Singh & Sons',artisanRegion:'Saharanpur, Uttar Pradesh',image:'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=80&w=600',description:'Intricately hand-carved solid teakwood wall jharokha with subtle brass filigree work. Brings rustic vintage royalty to any home corner.',materials:'Reclaimed Teak Wood, Brass Accents, Antique Stain Finish',inStock:6,isFeatured:false,isBestseller:false},
@@ -40,19 +40,16 @@ return arr.sort((a,b)=>state.sort==='price-low'?a.price-b.price:state.sort==='pr
 }
 function productCard(p){
 let wished=state.wishlist.includes(p.id);
+let badge=p.isBestseller?'BESTSELLER':(p.isFeatured?'FEATURED':'HANDMADE');
 return `<article class="product">
-<img class="product-img" src="${p.image}" alt="">
+<div class="product-media"><img class="product-img" src="${p.image}" alt="${p.title}"><span class="product-badge">${badge}</span><button class="heart-btn" onclick="toggleWish('${p.id}')" title="Save to wishlist">${wished?'♥':'♡'}</button></div>
 <div class="product-body">
 <div class="product-cat">${p.subCategory}</div>
 <h3>${p.title}</h3>
-<div class="artisan">By ${p.artisanName} · ${p.artisanRegion}</div>
-<div class="stars">★ ${p.rating} <span style="color:#a8a29e">(${p.reviewsCount})</span></div>
-<div class="price">${money(p.price)} <span class="old">${money(p.originalPrice)}</span></div>
-<div class="product-actions">
-<button class="add" onclick="addCart('${p.id}')">Add to Cart</button>
-<button class="wish" onclick="toggleWish('${p.id}')">${wished?'♥ Saved':'♡ Save'}</button>
-</div>
-<button class="small-btn" style="width:100%;margin-top:8px" onclick="openProduct('${p.id}')">View Details</button>
+<div class="artisan"><span>By ${p.artisanName}</span><small>${p.artisanRegion}</small></div>
+<div class="stars">★ ${p.rating} <span>(${p.reviewsCount} reviews)</span></div>
+<div class="price-row"><div class="price">${money(p.price)} <span class="old">${money(p.originalPrice)}</span></div><span class="save-tag">SAVE ${Math.round((1-p.price/p.originalPrice)*100)}%</span></div>
+<div class="product-actions"><button class="add" onclick="addCart('${p.id}')">Add to Cart</button><button class="details-btn" onclick="openProduct('${p.id}')">View</button></div>
 </div></article>`
 }
 function renderShop(){
@@ -60,24 +57,19 @@ state.search=$('searchInput')?.value||state.search;
 let arr=filtered();
 $('app').innerHTML=`<div class="container">
 <section class="hero">
-<span class="pill">Directly from Rural Craft Hubs</span>
-<h1>Empowering India's Heritage Craftsmen & Cooks</h1>
-<p>Discover authentic stone-ground spices, sun-dried home pickles, Jaipur hand pottery, and handcrafted woodcraft directly from master artisans.</p>
-<div class="hero-actions"><button class="primary" onclick="setCategory('Handmade Decor')">Explore Home Decor →</button><button class="secondary" onclick="setCategory('Traditional Edibles')">Explore Local Delights →</button></div>
+<div class="hero-copy"><span class="pill">INDIA'S HANDMADE MARKETPLACE</span><h1>Beautiful things.<br><em>Made by hand.</em></h1><p>Discover authentic crafts, traditional foods and timeless pieces made by skilled Indian artisans — directly from their workshops to your home.</p><div class="hero-actions"><button class="primary" onclick="setCategory('Handmade Decor')">Shop Handcrafted Decor <span>→</span></button><button class="secondary" onclick="setCategory('Traditional Edibles')">Explore Local Flavours</button></div><div class="hero-proof"><span>✓ Verified artisans</span><span>✓ Authentic products</span><span>✓ India-wide delivery</span></div></div>
+<div class="hero-art"><div class="hero-card-main"><span>CRAFTED IN INDIA</span><strong>Every piece<br>has a story.</strong><small>From artisan hands to your home</small></div><div class="hero-card-float">✦<b>500+</b><span>Artisans</span></div></div>
 </section>
-<div class="section-title"><div><h2>Shop by Tradition</h2><p>Discover handcrafted products made by skilled Indian artisans.</p></div></div>
+<div class="trust-strip"><div><b>✦</b><span><strong>Authentic Craft</strong>Made by real artisans</span></div><div><b>₹</b><span><strong>Fair Pricing</strong>Better value for makers</span></div><div><b>↗</b><span><strong>Pan-India Delivery</strong>From village to doorstep</span></div><div><b>♡</b><span><strong>Made with Care</strong>Thoughtfully handcrafted</span></div></div>
+<div class="section-title"><div><span class="eyebrow">EXPLORE THE COLLECTION</span><h2>Shop by Tradition</h2><p>Find something special from India's diverse craft and food traditions.</p></div></div>
 <div class="categories">
-<div class="category ${state.category==='Handmade Decor'?'active':''}" onclick="setCategory('Handmade Decor')"><div><h3>🏺 Handmade Decor</h3><p>Pottery, woodcraft, textiles & rugs</p></div><b>→</b></div>
-<div class="category ${state.category==='Traditional Edibles'?'active':''}" onclick="setCategory('Traditional Edibles')"><div><h3>🌶 Traditional Edibles</h3><p>Pickles, teas, sweets & spices</p></div><b>→</b></div>
+<div class="category category-decor ${state.category==='Handmade Decor'?'active':''}" onclick="setCategory('Handmade Decor')"><div class="category-icon">🏺</div><div><span>01</span><h3>Handmade Decor</h3><p>Pottery, woodcraft, textiles & rugs</p></div><b>↗</b></div>
+<div class="category category-food ${state.category==='Traditional Edibles'?'active':''}" onclick="setCategory('Traditional Edibles')"><div class="category-icon">🌶</div><div><span>02</span><h3>Traditional Edibles</h3><p>Pickles, teas, sweets & spices</p></div><b>↗</b></div>
 </div>
-<div class="section-title"><div><h2>${state.category==='All'?'Featured Marketplace':state.category}</h2><p>${arr.length} products found</p></div></div>
-<div class="controls">
-<button class="tab ${state.category==='All'?'active':''}" onclick="setCategory('All')">All</button>
-<select class="select" onchange="state.sort=this.value;renderShop()"><option value="featured">Featured</option><option value="price-low">Price: Low to High</option><option value="price-high">Price: High to Low</option><option value="rating">Top Rated</option></select>
-<label class="select">Max Price ₹${state.price}<input class="range" type="range" min="300" max="3000" step="50" value="${state.price}" oninput="state.price=+this.value;renderShop()"></label>
-</div>
-<div class="products">${arr.length?arr.map(productCard).join(''):`<div class="empty" style="grid-column:1/-1">No products found for these filters.</div>`}</div>
-<div class="footer">FolkMade · Handcrafted Traditions from India</div>
+<div class="market-head"><div><span class="eyebrow">CURATED FOR YOU</span><h2>${state.category==='All'?'Featured Marketplace':state.category}</h2><p>${arr.length} handcrafted products available</p></div><div class="controls"><button class="tab ${state.category==='All'?'active':''}" onclick="setCategory('All')">All</button><select class="select" onchange="state.sort=this.value;renderShop()"><option value="featured">Featured</option><option value="price-low">Price: Low to High</option><option value="price-high">Price: High to Low</option><option value="rating">Top Rated</option></select><label class="price-filter">Up to ₹${state.price}<input class="range" type="range" min="300" max="3000" step="50" value="${state.price}" oninput="state.price=+this.value;renderShop()"></label></div></div>
+<div class="products">${arr.length?arr.map(productCard).join(''):`<div class="empty" style="grid-column:1/-1"><strong>No products found</strong><br>Try changing your search or price filter.</div>`}</div>
+<section class="artisan-banner"><div><span class="eyebrow">MEET THE MAKERS</span><h2>Behind every product is a person.</h2><p>FolkMade helps skilled artisans take their traditional craft to customers across India.</p></div><button class="secondary-light" onclick="showView('about')">Meet Our Artisans →</button></section>
+<footer class="footer"><div class="footer-brand"><div class="brand-name">FolkMade</div><p>Handcrafted Traditions from India</p></div><div><b>Shop</b><span>Handmade Decor</span><span>Traditional Edibles</span><span>Wishlist</span></div><div><b>FolkMade</b><span>Our Artisans</span><span>My Orders</span><span>Seller / Admin</span></div><div><b>Promise</b><span>Authentic Craft</span><span>Fair Pricing</span><span>Pan-India Delivery</span></div><div class="footer-bottom">© 2026 FolkMade · Handcrafted with tradition.</div></footer>
 </div>`
 }
 function renderWishlist(){
@@ -105,7 +97,7 @@ ${state.adminTab==='products'?`<div class="table-wrap"><table class="table"><the
 /* =========================
    FolkMade Authentication
    ========================= */
-/*let currentUser = null;
+let currentUser = null;
 try {
   currentUser = JSON.parse(localStorage.getItem('folkmade_current_user') || 'null');
 } catch(e) {
@@ -285,45 +277,25 @@ function registerAccount(e){
     return;
   }
 
-  fetch('register.php', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
+  const users = getRegisteredUsers();
 
-    body:
-      'name=' + encodeURIComponent(name) +
-      '&email=' + encodeURIComponent(email) +
-      '&phone=' + encodeURIComponent(phone) +
-      '&password=' + encodeURIComponent(password) +
-      '&role=' + encodeURIComponent(role)
-  })
+  if(users.some(u => u.email === email)){
+    error.innerHTML = '<div class="auth-error">This email is already registered. Please login.</div>';
+    return;
+  }
 
-  .then(response => response.text())
-
-  .then(result => {
-
-    if(result.includes('Registration successful')){
-
-      showLoginForm('Account created successfully. Please login.');
-
-    }else{
-
-      error.innerHTML =
-        '<div class="auth-error">' + result + '</div>';
-
-    }
-
-  })
-
-  .catch(() => {
-
-    error.innerHTML =
-      '<div class="auth-error">Registration failed. Please try again.</div>';
-
+  users.push({
+    name,
+    email,
+    phone,
+    password,
+    role
   });
-}
 
+  saveRegisteredUsers(users);
+
+  showLoginForm('Account created successfully. Please login.');
+}
 function logoutAccount(){
   currentUser = null;
   localStorage.removeItem('folkmade_current_user');
@@ -382,8 +354,10 @@ else if(state.view==='wishlist') renderWishlist();
 else if(state.view==='about') renderAbout();
 else if(state.view==='admin') renderAdmin();
 else if(state.view==='seller') renderSeller();
+else if(state.view==='orders') renderOrders();
 else renderShop();
 }
+function renderOrders(){let orders=JSON.parse(localStorage.getItem('folkMadeOrders'))||[];$('app').innerHTML=`<div class="section-head"><div><h2>My Orders</h2><p>Your recent orders</p></div></div>${orders.length?orders.map(o=>`<div class="info-card" style="margin-bottom:16px"><h3>Order ID: ${o.id}</h3><p><b>Date:</b> ${o.date}</p><p><b>Payment:</b> ${o.payment}</p><p><b>Total:</b> ₹${o.total}</p><p><b>Status:</b> ${o.status}</p></div>`).join(''):`<div class="empty">No orders yet.</div>`}`;};
 function toggleWish(id){if(state.wishlist.includes(id)){state.wishlist=state.wishlist.filter(x=>x!==id);toast('Removed from Wishlist')}else{state.wishlist.push(id);toast('Saved to Wishlist!')}render()}
 function addCart(id){let p=products.find(x=>x.id===id),x=state.cart.find(x=>x.id===id);if(x)x.qty++;else state.cart.push({id,qty:1});toast(`Added "${p.title}" to your cart!`);render()}
 function changeQty(id,d){let x=state.cart.find(x=>x.id===id);if(x){x.qty+=d;if(x.qty<=0)state.cart=state.cart.filter(y=>y.id!==id)}updateCart()}
@@ -396,7 +370,8 @@ $('cartSubtotal').textContent=money(subtotal);$('shipping').textContent=subtotal
 $('cartItems').innerHTML=state.cart.length?state.cart.map(x=>{let p=products.find(p=>p.id===x.id);return `<div class="cart-item"><img src="${p.image}"><div><h4>${p.title}</h4><small>${money(p.price)}</small><div class="qty"><button onclick="changeQty('${p.id}',-1)">−</button><b>${x.qty}</b><button onclick="changeQty('${p.id}',1)">+</button></div></div><button class="small-btn danger" onclick="removeCart('${p.id}')">×</button></div>`}).join(''):`<div class="empty">Your shopping bag is empty.</div>`;
 render()
 }
-function checkout(){if(!state.cart.length)return toast('Your cart is empty');alert('Checkout demo: order placed successfully!');state.cart=[];closeCart();toast('Order placed successfully!')}
+function checkout(){if(!state.cart.length)return toast('Your cart is empty');$('modalContent').innerHTML=`<h2>Checkout</h2><p class="auth-sub">Complete your order details</p><div class="field"><label>Full Name</label><input id="order-name" placeholder="Enter your name" required></div><div class="field" style="margin-top:12px"><label>Phone Number</label><input id="order-phone" type="tel" placeholder="Enter phone number" required></div><div class="field" style="margin-top:12px"><label>Delivery Address</label><textarea id="order-address" placeholder="Enter complete delivery address" rows="4" required></textarea></div><div class="field" style="margin-top:12px"><label>Payment Method</label><select id="order-payment"><option value="COD">Cash on Delivery</option><option value="UPI">UPI</option><option value="Card">Credit / Debit Card</option></select></div><button class="primary full" style="margin-top:18px" onclick="placeOrder()">Place Order</button>`;$('modal').classList.remove('hidden')}
+function placeOrder(){const name=$('order-name').value.trim(),phone=$('order-phone').value.trim(),address=$('order-address').value.trim(),payment=$('order-payment').value;if(!name||!phone||!address)return toast('Please fill all details');const total=state.cart.reduce((sum,item)=>{const p=products.find(x=>x.id===item.id);return sum+p.price*item.qty},0),shipping=total>999?0:99,order={id:'ORD-'+Date.now(),name,phone,address,payment,total:total+shipping,status:'Order Confirmed',date:new Date().toLocaleDateString(),items:state.cart};let orders=JSON.parse(localStorage.getItem('folkMadeOrders'))||[];orders.push(order);localStorage.setItem('folkMadeOrders',JSON.stringify(orders));state.cart=[];hideModal();closeCart();toast('Order placed successfully!');setTimeout(()=>alert('Order Confirmed!\\n\\nOrder ID: '+order.id+'\\nPayment: '+order.payment+'\\nTotal: ₹'+order.total),300)}
 function openProduct(id){let p=products.find(x=>x.id===id);$('modalContent').innerHTML=`<div class="detail-grid"><img class="detail-img" src="${p.image}"><div class="detail"><div class="product-cat">${p.subCategory}</div><h2>${p.title}</h2><div class="stars">★ ${p.rating} (${p.reviewsCount} reviews)</div><p>${p.description}</p><p><b>Materials:</b> ${p.materials}</p><p><b>Artisan:</b> ${p.artisanName}<br>${p.artisanRegion}</p><div class="price">${money(p.price)} <span class="old">${money(p.originalPrice)}</span></div><button class="primary full" onclick="addCart('${p.id}');hideModal()">Add to Cart</button></div></div>`;$('modal').classList.remove('hidden')}
 function hideModal(){$('modal').classList.add('hidden')}
 function closeModal(e){if(e.target.id==='modal')hideModal()}
@@ -424,572 +399,4 @@ function saveProduct(e,id){e.preventDefault();let p={id:id||'p_'+Date.now(),titl
 function deleteProduct(id){if(confirm('Are you sure you want to delete this product from the marketplace?')){let i=products.findIndex(x=>x.id===id);products.splice(i,1);toast('Product removed from FolkMade catalog');renderAdmin()}}
 
 $('searchInput').addEventListener('input',()=>{state.search=$('searchInput').value;renderShop()});
-render();*/
-let products = [
-  {
-    id: 'p1',
-    title: 'Hand-Painted Royal Blue Pottery Flower Vase',
-    category: 'Handmade Decor',
-    subCategory: 'Pottery & Ceramics',
-    price: 1299,
-    originalPrice: 1699,
-    rating: 4.8,
-    reviewsCount: 34,
-    artisanName: 'Ramesh Kumhar',
-    artisanRegion: 'Jaipur, Rajasthan',
-    image: 'https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?auto=format&fit=crop&q=80&w=600',
-    description: 'Authentic quartz-sand pottery handcrafted by master craftsmen in Jaipur.',
-    materials: 'Quartz stone powder, glass, natural oxides',
-    inStock: 12,
-    isSellerItem: false
-  },
-  {
-    id: 'p3',
-    title: 'Carved Teakwood Wall Hanging Jharokha',
-    category: 'Handmade Decor',
-    subCategory: 'Wood Carvings',
-    price: 2499,
-    originalPrice: 3100,
-    rating: 4.7,
-    reviewsCount: 19,
-    artisanName: 'Gurpreet Singh',
-    artisanRegion: 'Saharanpur, Uttar Pradesh',
-    image: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=80&w=600',
-    description: 'Intricately hand-carved solid teakwood wall jharokha with subtle brass filigree work.',
-    materials: 'Reclaimed Teak Wood, Brass Accents',
-    inStock: 6,
-    isSellerItem: false
-  },
-  {
-    id: 'p5',
-    title: 'Handwoven Dhurrie Floor Mat - Terracotta Motif',
-    category: 'Handmade Decor',
-    subCategory: 'Textiles & Rugs',
-    price: 1850,
-    originalPrice: 2200,
-    rating: 4.6,
-    reviewsCount: 15,
-    artisanName: 'Devika Devi',
-    artisanRegion: 'Mirzapur, Uttar Pradesh',
-    image: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&q=80&w=600',
-    description: '100% organic cotton handloom rug woven on pit looms.',
-    materials: 'Organic Raw Cotton, Vegetable Dyes',
-    inStock: 8,
-    isSellerItem: false
-  }
-];
-
-const artisans = [
-  { id: 'a1', name: 'Ramesh Kumhar', region: 'Jaipur, Rajasthan', specialty: 'Blue Pottery', experience: '22 Years', status: 'Verified', productsCount: 4, bio: '3rd generation artisan.' },
-  { id: 'a3', name: 'Gurpreet Singh', region: 'Saharanpur, UP', specialty: 'Woodcraft', experience: '18 Years', status: 'Verified', productsCount: 3, bio: 'Teakwood carver.' }
-];
-
-let state = {
-  view: 'shop',
-  category: 'All',
-  search: '',
-  cart: [],
-  wishlist: [],
-  adminTab: 'products',
-  sellerTab: 'inventory',
-  orders: [
-    { id: 'ORD-1001', customer: 'Aarav Sharma', title: 'Hand-Painted Royal Blue Pottery Flower Vase', amount: 1299, items: 1, status: 'Pending', date: '2026-10-04', paymentMethod: 'UPI' },
-    { id: 'ORD-1002', customer: 'Priya Nair', title: 'Carved Teakwood Wall Hanging Jharokha', amount: 2499, items: 1, status: 'Shipped', date: '2026-10-05', paymentMethod: 'Card' }
-  ]
-};
-
-let currentUser = null;
-try {
-  currentUser = JSON.parse(localStorage.getItem('folkmade_current_user') || 'null');
-} catch (e) {
-  currentUser = null;
-}
-
-const ADMIN_ACCOUNT = { name: 'FolkMade Admin', email: 'admin@folkmade.in', password: 'admin123', role: 'admin' };
-
-const $ = id => document.getElementById(id);
-function money(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
-
-function toast(msg) { 
-  let t = $('toast');
-  if (!t) return;
-  t.textContent = msg; 
-  t.classList.remove('hidden'); 
-  setTimeout(() => t.classList.add('hidden'), 2500); 
-}
-
-function showView(v) { 
-  state.view = v; 
-  render(); 
-  window.scrollTo({ top: 0, behavior: 'smooth' }); 
-}
-
-function filtered() {
-  let searchVal = ($('searchInput')?.value || state.search || '').toLowerCase();
-  return products.filter(p =>
-    p.title.toLowerCase().includes(searchVal) ||
-    p.artisanName.toLowerCase().includes(searchVal) ||
-    p.subCategory.toLowerCase().includes(searchVal)
-  );
-}
-
-function productCard(p) {
-  let discount = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
-  let wished = state.wishlist.includes(p.id);
-  return `
-  <article class="product">
-    <span class="discount-tag">-${discount}% OFF</span>
-    <img class="product-img" src="${p.image}" alt="${p.title}">
-    <div class="product-body">
-      <div class="product-cat">${p.subCategory}</div>
-      <h3>${p.title}</h3>
-      <div class="artisan">By ${p.artisanName} · ${p.artisanRegion}</div>
-      <div class="stars">★ ${p.rating} <span style="color:#707070">(${p.reviewsCount})</span></div>
-      <div class="price">${money(p.price)} <span class="old">${money(p.originalPrice)}</span></div>
-      <div style="font-size:11px;color:#007600;font-weight:700;margin-bottom:10px;">✓ FREE Delivery</div>
-      <div class="product-actions">
-        <button class="add" type="button" onclick="addCart('${p.id}')">Add to Cart</button>
-        <button class="wish" type="button" onclick="toggleWish('${p.id}')">${wished ? '♥' : '♡'}</button>
-      </div>
-      <button class="small-btn" style="width:100%;margin-top:8px" type="button" onclick="openProduct('${p.id}')">View Details</button>
-    </div>
-  </article>`;
-}
-
-function renderShop() {
-  let arr = filtered();
-  let app = $('app');
-  if (!app) return;
-  app.innerHTML = `
-  <div class="container">
-    <section class="hero">
-      <span class="pill">Directly from Rural Craft Hubs</span>
-      <h1>Handcrafted Indian Artisanship</h1>
-      <p>Discover authentic Jaipur pottery, hand-woven textiles, and handcrafted wooden decor directly from master artisans.</p>
-    </section>
-    <div class="section-title"><h2>Handcrafted Collections</h2></div>
-    <div class="products">
-      ${arr.length ? arr.map(productCard).join('') : `<div style="grid-column:1/-1;text-align:center;padding:40px;background:#fff;border-radius:8px;">No products found.</div>`}
-    </div>
-    <div class="footer">FolkMade · Handcrafted Decor & Heritage Art from India</div>
-  </div>`;
-}
-
-function renderWishlist() {
-  let arr = products.filter(p => state.wishlist.includes(p.id));
-  let app = $('app');
-  if (!app) return;
-  app.innerHTML = `
-  <div class="container">
-    <div class="section-title"><h2>Saved Wishlist</h2></div>
-    <div class="products">
-      ${arr.length ? arr.map(productCard).join('') : `<div style="grid-column:1/-1;text-align:center;padding:40px;background:#fff;border-radius:8px;">Your wishlist is empty.</div>`}
-    </div>
-  </div>`;
-}
-
-function renderAdmin() {
-  let app = $('app');
-  if (!app) return;
-  let productRows = products.map(p => `<tr><td>${p.title}</td><td>${p.category}</td><td>${money(p.price)}</td><td>${p.inStock}</td><td><button class="small-btn" type="button" onclick="openEditProductModal('${p.id}')">Edit</button> <button class="small-btn danger" type="button" onclick="deleteProduct('${p.id}')">Delete</button></td></tr>`).join('');
-  let orderRows = state.orders.map(o => `<tr><td>${o.id}</td><td>${o.customer}</td><td>${money(o.amount)}</td><td>${o.items}</td><td>${o.status}</td><td>${o.date}</td><td>${o.paymentMethod}</td></tr>`).join('');
-  
-  app.innerHTML = `
-  <div class="container">
-    <div class="section-title"><h2>Admin Portal</h2><button class="primary" type="button" onclick="openAddProductModal()">+ Add Product</button></div>
-    <div class="stat-grid">
-      <div class="stat"><small>Products</small><strong>${products.length}</strong></div>
-      <div class="stat"><small>Artisans</small><strong>${artisans.length}</strong></div>
-      <div class="stat"><small>Orders</small><strong>${state.orders.length}</strong></div>
-      <div class="stat"><small>Revenue</small><strong>${money(state.orders.reduce((a, o) => a + o.amount, 0))}</strong></div>
-    </div>
-    <div class="admin-tabs">
-      <button class="tab ${state.adminTab === 'products' ? 'active' : ''}" type="button" onclick="state.adminTab='products';renderAdmin()">Products</button>
-      <button class="tab ${state.adminTab === 'orders' ? 'active' : ''}" type="button" onclick="state.adminTab='orders';renderAdmin()">Orders</button>
-    </div>
-    ${state.adminTab === 'products' ? `<div class="table-wrap"><table class="table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody>${productRows}</tbody></table></div>` : `<div class="table-wrap"><table class="table"><thead><tr><th>Order</th><th>Customer</th><th>Amount</th><th>Items</th><th>Status</th><th>Date</th><th>Payment</th></tr></thead><tbody>${orderRows}</tbody></table></div>`}
-  </div>`;
-}
-
-function renderSeller() {
-  let app = $('app');
-  if (!app) return;
-  const sellerName = currentUser ? currentUser.name : 'Seller';
-  let sellerProducts = products.filter(p => p.artisanName.toLowerCase() === sellerName.toLowerCase() || p.isSellerItem);
-
-  app.innerHTML = `
-    <div class="container">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2>Seller Operations Portal</h2>
-        <button class="secondary" type="button" onclick="openAddProductModal()">+ Add New Product</button>
-      </div>
-
-      <div class="stat-grid">
-        <div class="stat"><small>Total Products Listed</small><strong>${sellerProducts.length}</strong></div>
-        <div class="stat"><small>Total Stock Count</small><strong>${sellerProducts.reduce((s,p) => s + p.inStock, 0)} Units</strong></div>
-        <div class="stat"><small>Active Customer Orders</small><strong>${state.orders.length}</strong></div>
-        <div class="stat"><small>Total Revenue</small><strong>${money(state.orders.reduce((s,o) => s + o.amount, 0))}</strong></div>
-      </div>
-
-      <div style="margin-bottom:15px; display:flex; gap:10px;">
-        <button class="tab ${state.sellerTab === 'inventory' ? 'active' : ''}" type="button" onclick="state.sellerTab='inventory';renderSeller()">Manage Inventory</button>
-        <button class="tab ${state.sellerTab === 'orders' ? 'active' : ''}" type="button" onclick="state.sellerTab='orders';renderSeller()">Orders & Delivery</button>
-      </div>
-
-      ${state.sellerTab === 'inventory' ? `
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr><th>Product Title</th><th>Category</th><th>Price (₹)</th><th>Stock Level</th><th>Quick Actions</th></tr>
-            </thead>
-            <tbody>
-              ${sellerProducts.map(p => `
-                <tr>
-                  <td><b>${p.title}</b></td>
-                  <td>${p.subCategory}</td>
-                  <td><input type="number" value="${p.price}" style="width:90px;padding:4px;" onchange="updatePrice('${p.id}', this.value)"></td>
-                  <td><input type="number" value="${p.inStock}" style="width:70px;padding:4px;" onchange="updateStock('${p.id}', this.value)"></td>
-                  <td>
-                    <button class="small-btn" type="button" onclick="openEditProductModal('${p.id}')">Edit</button>
-                    <button class="small-btn danger" type="button" onclick="deleteProduct('${p.id}')">Delete</button>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      ` : `
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Delivery Status</th><th>Update Status</th></tr>
-            </thead>
-            <tbody>
-              ${state.orders.map(o => `
-                <tr>
-                  <td><b>${o.id}</b></td>
-                  <td>${o.customer}</td>
-                  <td>${o.title}</td>
-                  <td>${money(o.amount)}</td>
-                  <td><span class="status-pill status-${o.status.toLowerCase()}">${o.status}</span></td>
-                  <td>
-                    <select onchange="updateDeliveryStatus('${o.id}', this.value)">
-                      <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
-                      <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
-                      <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
-                      <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
-                      <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
-                    </select>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      `}
-    </div>`;
-}
-
-function updatePrice(id, newPrice) {
-  let p = products.find(x => x.id === id);
-  if (p) { p.price = Number(newPrice); toast('Price updated successfully!'); }
-}
-
-function updateStock(id, newStock) {
-  let p = products.find(x => x.id === id);
-  if (p) { p.inStock = Number(newStock); toast('Stock count updated!'); }
-}
-
-function updateDeliveryStatus(orderId, newStatus) {
-  let order = state.orders.find(o => o.id === orderId);
-  if (order) { order.status = newStatus; toast(`Order ${orderId} status set to ${newStatus}`); renderSeller(); }
-}
-
-function openAddProductModal() { showProductForm(null); }
-function openEditProductModal(id) { showProductForm(products.find(p => p.id === id)); }
-
-function showProductForm(p) {
-  p = p || { id: '', title: '', subCategory: 'Pottery & Ceramics', price: '', originalPrice: '', inStock: 10, image: '', description: '' };
-  let target = $('modalContent');
-  if(!target) return;
-
-  target.innerHTML = `
-    <h3>${p.id ? 'Edit Product' : 'Add New Product'}</h3>
-    <form onsubmit="saveProduct(event, '${p.id}')">
-      <div class="form-grid">
-        <div class="field full-field"><label>Product Title *</label><input id="f-title" value="${p.title}" required></div>
-        <div class="field"><label>Category *</label><input id="f-sub" value="${p.subCategory}" required></div>
-        <div class="field"><label>Price (₹) *</label><input id="f-price" type="number" value="${p.price}" required></div>
-        <div class="field"><label>Original MRP (₹)</label><input id="f-orig" type="number" value="${p.originalPrice || ''}"></div>
-        <div class="field"><label>Available Stock *</label><input id="f-stock" type="number" value="${p.inStock}" required></div>
-        <div class="field full-field"><label>Image URL</label><input id="f-img" value="${p.image}"></div>
-        <div class="field full-field"><label>Description</label><textarea id="f-desc">${p.description}</textarea></div>
-      </div>
-      <button class="primary full" type="submit" style="margin-top:15px;">Save Listing</button>
-    </form>`;
-  $('modal')?.classList.remove('hidden');
-}
-
-function saveProduct(e, id) {
-  e.preventDefault();
-  let newProd = {
-    id: id || 'p_' + Date.now(),
-    title: $('f-title').value,
-    category: 'Handmade Decor',
-    subCategory: $('f-sub').value,
-    price: +$('f-price').value,
-    originalPrice: +$('f-orig').value \vert{}\vert{} Math.round(+$('f-price').value * 1.25),
-    rating: 5.0,
-    reviewsCount: 1,
-    artisanName: currentUser ? currentUser.name : 'Seller',
-    artisanRegion: 'India',
-    image: $('f-img').value || 'https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?auto=format&fit=crop&q=80&w=600',
-    description: $('f-desc').value,
-    materials: 'Handcrafted',
-    inStock: +$('f-stock').value,
-    isSellerItem: true
-  };
-
-  if (id) {
-    let idx = products.findIndex(p => p.id === id);
-    if(idx !== -1) products[idx] = newProd;
-    toast('Product updated!');
-  } else {
-    products.unshift(newProd);
-    toast('New product published!');
-  }
-  closeModal();
-  if (currentUser && currentUser.role === 'seller') renderSeller();
-  else render();
-}
-
-function deleteProduct(id) {
-  if (confirm('Delete this product listing?')) {
-    products = products.filter(p => p.id !== id);
-    toast('Product deleted.');
-    if (currentUser && currentUser.role === 'seller') renderSeller();
-    else if (currentUser && currentUser.role === 'admin') renderAdmin();
-    else renderShop();
-  }
-}
-
-function getRegisteredUsers() {
-  try { return JSON.parse(localStorage.getItem('folkmade_users') || '[]'); } catch (e) { return []; }
-}
-
-function openAuth() {
-  showLoginForm();
-  $('authModal')?.classList.remove('hidden');
-}
-
-function closeAuth() {
-  $('authModal')?.classList.add('hidden');
-}
-
-function closeModal() {
-  $('modal')?.classList.add('hidden');
-}
-
-function showLoginForm(message = '') {
-  let target = $('authContent');
-  if(!target) return;
-
-  target.innerHTML = `
-    <h2>Welcome to FolkMade</h2>
-    ${message ? `<div style="background:#d4edda;color:#155724;padding:8px;margin-bottom:10px;border-radius:4px;">${message}</div>` : ''}
-    <form onsubmit="loginAccount(event)">
-      <div class="field"><label>Login as</label><select id="login-role" required><option value="user">Buyer</option><option value="seller">Seller</option><option value="admin">Admin</option></select></div>
-      <div class="field" style="margin-top:10px;"><label>Email</label><input id="login-email" type="email" placeholder="seller@folkmade.in" required></div>
-      <div class="field" style="margin-top:10px;"><label>Password</label><input id="login-password" type="password" required></div>
-      <div id="login-error"></div>
-      <button class="primary full" type="submit" style="margin-top:15px;">Login</button>
-    </form>
-    <p style="font-size:12px;margin-top:12px;">New user? <button type="button" style="background:none;color:#b45309;font-weight:700;border:0;cursor:pointer;" onclick="showRegisterForm()">Create account</button></p>`;
-}
-
-function showRegisterForm() {
-  let target = $('authContent');
-  if(!target) return;
-
-  target.innerHTML = `
-    <h2>Create FolkMade Account</h2>
-    <form onsubmit="registerAccount(event)">
-      <div class="field"><label>Register as</label><select id="reg-role" required><option value="user">Buyer</option><option value="seller">Seller</option></select></div>
-      <div class="field" style="margin-top:10px;"><label>Full Name</label><input id="reg-name" required></div>
-      <div class="field" style="margin-top:10px;"><label>Email</label><input id="reg-email" type="email" required></div>
-      <div class="field" style="margin-top:10px;"><label>Phone</label><input id="reg-phone" type="tel" required></div>
-      <div class="field" style="margin-top:10px;"><label>Password</label><input id="reg-password" type="password" required></div>
-      <div class="field" style="margin-top:10px;"><label>Confirm Password</label><input id="reg-confirm" type="password" required></div>
-      <div id="register-error"></div>
-      <button class="primary full" type="submit" style="margin-top:15px;">Create Account</button>
-    </form>`;
-}
-
-function loginAccount(e) {
-  e.preventDefault();
-  const role = $('login-role').value;
-  const email = $('login-email').value.trim().toLowerCase();
-  const password = $('login-password').value;
-  let account = null;
-
-  if (role === 'admin') {
-    if (email === ADMIN_ACCOUNT.email && password === ADMIN_ACCOUNT.password) account = { ...ADMIN_ACCOUNT };
-  } else {
-    account = getRegisteredUsers().find(u => u.email === email && u.password === password && u.role === role);
-  }
-
-  if (!account) {
-    let err = $('login-error');
-    if(err) err.innerHTML = '<div style="color:red;font-size:12px;margin-top:8px;">Invalid credentials or wrong role.</div>';
-    return;
-  }
-
-  currentUser = { name: account.name, email: account.email, role: account.role };
-  localStorage.setItem('folkmade_current_user', JSON.stringify(currentUser));
-  
-  closeAuth();
-
-  if (currentUser.role === 'admin') state.view = 'admin';
-  else if (currentUser.role === 'seller') state.view = 'seller';
-  else state.view = 'shop';
-  
-  toast(`Logged in as ${currentUser.name}`);
-  render();
-}
-
-function registerAccount(e) {
-  e.preventDefault();
-  const role = $('reg-role').value;
-  const name = $('reg-name').value.trim();
-  const email = $('reg-email').value.trim().toLowerCase();
-  const phone = $('reg-phone').value.trim();
-  const password = $('reg-password').value;
-  const confirm = $('reg-confirm').value;
-
-  if (password !== confirm) { 
-    let err = $('register-error');
-    if(err) err.innerHTML = '<div style="color:red;font-size:12px;">Passwords do not match.</div>'; 
-    return; 
-  }
-
-  let users = getRegisteredUsers();
-  users.push({ name, email, phone, password, role });
-  localStorage.setItem('folkmade_users', JSON.stringify(users));
-
-  showLoginForm('Account created successfully. Please login now.');
-}
-
-function logoutAccount() {
-  currentUser = null;
-  localStorage.removeItem('folkmade_current_user');
-  state.view = 'shop';
-  render();
-  toast('Logged out successfully.');
-}
-
-function renderAccountButton() {
-  const btn = $('accountBtn');
-  if (!btn) return;
-  if (currentUser) {
-    btn.textContent = `👤 ${currentUser.name} (${currentUser.role.toUpperCase()}) | Logout`;
-    btn.onclick = logoutAccount;
-  } else {
-    btn.textContent = '👤 Login / Register';
-    btn.onclick = openAuth;
-  }
-}
-
-function toggleWish(id) { 
-  if (state.wishlist.includes(id)) {
-    state.wishlist = state.wishlist.filter(x => x !== id);
-    toast('Removed from Wishlist');
-  } else {
-    state.wishlist.push(id);
-    toast('Added to Wishlist!');
-  }
-  render(); 
-}
-
-function addCart(id) { 
-  let p = products.find(x => x.id === id), x = state.cart.find(x => x.id === id); 
-  if (x) x.qty++; 
-  else state.cart.push({ id, qty: 1 }); 
-  toast(`Added "${p.title}" to cart!`); 
-  render(); 
-}
-
-function changeQty(id, d) { 
-  let x = state.cart.find(x => x.id === id); 
-  if (x) { 
-    x.qty += d; 
-    if (x.qty <= 0) state.cart = state.cart.filter(y => y.id !== id); 
-  } 
-  updateCart(); 
-}
-
-function removeCart(id) { 
-  state.cart = state.cart.filter(x => x.id !== id); 
-  updateCart(); 
-}
-
-function openCart() { 
-  updateCart(); 
-  $('overlay')?.classList.remove('hidden');$('cartPanel')?.classList.add('open'); 
-}
-
-function closeCart() { 
-  $('overlay')?.classList.add('hidden');$('cartPanel')?.classList.remove('open'); 
-}
-
-function updateCart() {
-  let subtotal = state.cart.reduce((s, x) => { let p = products.find(p => p.id === x.id); return s + (p ? p.price * x.qty : 0); }, 0);
-  if($('cartSubtotal'))$('cartSubtotal').textContent = money(subtotal);
-  if($('grandTotal'))$('grandTotal').textContent = money(subtotal);
-  if($('cartItems')) {$('cartItems').innerHTML = state.cart.length ? state.cart.map(x => { 
-      let p = products.find(p => p.id === x.id); 
-      return `<div class="cart-item"><img src="${p.image}"><div><h4>${p.title}</h4><small>${money(p.price)}</small><div style="margin-top:5px;"><button type="button" onclick="changeQty('${p.id}',-1)">−</button> <b>${x.qty}</b> <button type="button" onclick="changeQty('${p.id}',1)">+</button></div></div><button class="small-btn danger" type="button" onclick="removeCart('${p.id}')">×</button></div>`; 
-    }).join('') : `<div style="text-align:center;padding:20px;">Shopping bag is empty.</div>`;
-  }
-  render();
-}
-
-function checkout() { 
-  if (!state.cart.length) return toast('Your cart is empty'); 
-  alert('Order placed successfully!'); 
-  state.cart = []; 
-  closeCart(); 
-  toast('Order placed!'); 
-}
-
-function openProduct(id) { 
-  let p = products.find(x => x.id === id); 
-  let target = $('modalContent');
-  if(target) {
-    target.innerHTML = `<div><img src="${p.image}" style="width:100%;height:250px;object-fit:cover;border-radius:6px;"><h2>${p.title}</h2><p>${p.description}</p><h3>${money(p.price)}</h3><button class="primary full" type="button" onclick="addCart('${p.id}');closeModal();">Add to Cart</button></div>`; 
-  }
-  $('modal')?.classList.remove('hidden'); 
-}
-
-function render() {
-  renderAccountButton();
-  if (state.view === 'seller' && (!currentUser || currentUser.role !== 'seller')) state.view = 'shop';
-  if (state.view === 'admin' && (!currentUser || currentUser.role !== 'admin')) state.view = 'shop';
-
-  if ($('wishCount'))$('wishCount').textContent = state.wishlist.length || '0';
-  if ($('cartCount'))$('cartCount').textContent = state.cart.reduce((a, c) => a + c.qty, 0) || '0';
-
-  if (state.view === 'seller') renderSeller();
-  else if (state.view === 'admin') renderAdmin();
-  else if (state.view === 'wishlist') renderWishlist();
-  else renderShop();
-}
-
-// Attach Event Listeners Safely After DOM Load
-window.addEventListener('DOMContentLoaded', () => {
-  $('brandBtn')?.addEventListener('click', () => showView('shop'));$('storeNavBtn')?.addEventListener('click', () => showView('shop'));
-  $('wishlistNavBtn')?.addEventListener('click', () => showView('wishlist'));$('cartNavBtn')?.addEventListener('click', openCart);
-  $('closeCartBtn')?.addEventListener('click', closeCart);$('overlay')?.addEventListener('click', closeCart);
-  $('closeModalBtn')?.addEventListener('click', closeModal);$('closeAuthBtn')?.addEventListener('click', closeAuth);
-  
-  render();
-});
+render();
