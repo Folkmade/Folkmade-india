@@ -20,6 +20,33 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLI
 const ORDER_ITEMS_CACHE_KEY = 'folkmade_order_items_cache';
 const PRODUCT_META_KEY = 'folkmade_product_meta';
 let currentUser = null;
+// Dynamic artisan data loaded from Supabase
+let artisans = [];
+
+async function loadArtisansFromDatabase() {
+  const { data, error } = await supabaseClient
+    .from('users')
+    .select('id, name, email, phone, role')
+    .eq('role', 'seller')
+    .order('id', { ascending: true });
+
+  if (error) {
+    console.error('ARTISAN LOAD ERROR:', error);
+    artisans = [];
+    return;
+  }
+
+  artisans = (data || []).map(seller => ({
+    id: seller.id,
+    name: seller.name || 'FolkMade Seller',
+    specialty: 'Handmade Products',
+    region: 'India',
+    experience: 'FolkMade Seller',
+    status: 'Registered Seller',
+    bio: 'Registered seller on the FolkMade marketplace.',
+    productsCount: 0
+  }));
+}
 let productMeta = {};
 try { productMeta = JSON.parse(localStorage.getItem(PRODUCT_META_KEY) || '{}'); } catch(e) { productMeta = {}; }
 
@@ -150,6 +177,7 @@ async function initFolkMade(){
       }catch(e){ currentUser=null; }
     }
     await loadProductsFromDatabase();
+    await loadArtisansFromDatabase();
   }catch(e){
     products=[...fallbackProducts];
     
